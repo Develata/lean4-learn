@@ -10,7 +10,7 @@
 4. **另译只进本表。** 仅有两个例外，首次出现时必须带上另译或消歧注：「elaborator（精译器；另译繁饰器）」「filtration（滤流；与滤子 `Filter` 无关）」。
 5. **人名定理**：只有通行音译才用中文（马尔可夫、切比雪夫、伯努利、泊松、柯西–施瓦茨、勒贝格、富比尼、伽罗瓦、琴生、拉姆齐、图兰），其余保留拉丁拼写（Chernoff、Hoeffding、Azuma、Doob、Cramér、Sanov、Varadhan、Gärtner–Ellis、Borel–Cantelli、Erdős–Rényi、Szemerédi、Lovász、Fenchel、Esscher）。
 6. **撞词**（同一汉字对应不同概念）须在首次遇到它的章节用提示框说明，并按文末「表 D　易混词」区分。数学名词一律用大陆简体通行写法（概率、泊松、期望、随机变量）。
-7. **「其他译法」列的缩写与计数。** RM = Lean-zh《Lean 语言参考手册》；TP = 《Lean 4 定理证明》；MP = 《Lean 4 元编程》；FP = 《Lean 函数式编程》；MIL = 《Lean 形式化数学》；WP = 中文维基百科标题；NJU / USTC / PKU = 对应高校的概率或随机过程讲义；OI = OI-wiki；JS = 简书《大偏差原理文献综述》；SCI = 《中国科学》大偏差论文。括号里的数字是调研笔记中的原始子串计数（含噪声，只表优势，不是精确用量）；没有数字就是笔记没有计数。
+7. **「其他译法」列的缩写与计数。** RM = Lean-zh《Lean 语言参考手册》；TP = 《Lean 4 定理证明》；MP = 《Lean 4 元编程》；FP = 《Lean 函数式编程》；MIL = 《Lean 形式化数学》；WP = 中文维基百科标题；NJU / USTC / PKU = 对应高校的概率或随机过程讲义；OI = OI-wiki；JS = 简书《大偏差原理文献综述》；SCI = 《中国科学》大偏差论文；CASB = 《中国科学院院刊》2012 大偏差文章；力学进展 = 《力学进展》2020 大偏差综述；HDP 讲义 / Zhihu = 高维概率（Vershynin）的中文笔记；Baidu Baike = 百度百科词条；CSDN = CSDN 译文。括号里的数字是调研笔记中的原始子串计数（含噪声，只表优势，不是精确用量）；没有数字就是笔记没有计数。
 8. **†** 表示该行没有 Lean-zh 语料计数，译名按通行的大陆数学或计算机用法暂定（调研笔记中为推断或记忆）；若与权威词表（《数学名词》《英汉数学词汇》）冲突，以后者为准并改表。
 
 ---
@@ -273,7 +273,7 @@
 | compact | 紧 | 紧致（MIL） | MIL 两词并用；本书统一用「紧」。 |
 | convex function | 凸函数 | — | WP；`ConvexOn`。 |
 | concave function | 凹函数 | — | †；`ConcaveOn`。 |
-| Jensen's inequality | 琴生不等式 | 詹森不等式；簡森（WP） | 琴生 [M]；Mathlib `ConvexOn.map_sum_le`。 |
+| Jensen's inequality | 琴生不等式 | 詹森不等式；簡森（WP 繁体标题，不用） | 琴生为 †；Mathlib `ConvexOn.map_sum_le`。 |
 | Cauchy–Schwarz inequality | 柯西–施瓦茨不等式 | — | WP；内积空间中的版本在 `Mathlib/Analysis/InnerProductSpace/Basic.lean`。 |
 | AM–GM inequality | 均值不等式 | 算术–几何平均不等式 | † Mathlib `geom_mean_le_arith_mean`（`Analysis/MeanInequalities.lean`）。 |
 
@@ -301,7 +301,7 @@
 | Lebesgue integral (`lintegral`) | 勒贝格积分 | — | WP；`∫⁻` 是取值于 `ℝ≥0∞` 的非负函数积分。 |
 | Bochner integral | Bochner 积分 | — | MIL；`∫ x, f x ∂μ`，对 Banach 空间取值的函数。 |
 | integrable | 可积 | — | †；`Integrable`。 |
-| Lp space / `MemLp` | Lp 空间 / 属于 Lp | — | WP Lp空间；`MemLp f p μ` 读作「`f` 属于 Lp(μ)」[I]。 |
+| Lp space / `MemLp` | Lp 空间 / 属于 Lp | — | WP Lp空间；`MemLp f p μ` 读作「`f` 属于 Lp(μ)」†。 |
 | dominated convergence theorem | 控制收敛定理 | — | MIL。 |
 | monotone convergence theorem | 单调收敛定理 | — | WP。 |
 | Fatou's lemma | Fatou 引理 | 法图引理 | WP 两写法；本书用拉丁。 |
@@ -316,7 +316,7 @@
 | English | 本书译名 | 其他译法（见于何处） | 说明 |
 |---|---|---|---|
 | random variable | 随机变量 | — | 全体来源；Mathlib 中就是 `Ω → E` 的可测函数。 |
-| distribution / law | 分布 | 律 | USTC；`HasLaw X P μ` 读作「`X` 在 `μ` 下的分布为 `P`」[I]；单写「律」易与「分布律」(pmf) 混淆。 |
+| distribution / law | 分布 | 律 | USTC；`HasLaw X P μ` 读作「`X` 在 `μ` 下的分布为 `P`」†；单写「律」易与「分布律」(pmf) 混淆。 |
 | expectation | 期望 | 数学期望 | NJU, USTC；`μ[X]`、`𝔼[X]`。 |
 | variance | 方差 | — | NJU；`variance`、`Var[X; μ]`。 |
 | covariance | 协方差 | — | USTC。 |
@@ -324,12 +324,12 @@
 | moment-generating function | 矩母函数 | 矩生成函数（WP, NJU 2）；矩量母函数 | 矩母函数 NJU 2；母函数 = 生成函数的传统叫法；`mgf`。 |
 | cumulant-generating function | 累积量母函数 | 对数矩母函数（JS） | `cgf`，即矩母函数取对数；对应 LDP 里的 Λ。 |
 | independence | 独立 | — | NJU；`IndepFun`、`iIndepFun`。 |
-| pairwise independent | 两两独立 | — | [M]；`Pairwise (· ⟂ᵢ[μ] ·)`。 |
+| pairwise independent | 两两独立 | — | †；`Pairwise (· ⟂ᵢ[μ] ·)`。 |
 | mutually independent | 相互独立 | — | †；`iIndepFun` 表示的整族独立。 |
 | identically distributed | 同分布 | — | WP；`IdentDistrib`。 |
 | i.i.d. | 独立同分布 | — | NJU 11, WP。 |
 | conditional expectation | 条件期望 | 条件数学期望 | NJU 10, USTC。 |
-| Markov kernel | 马尔可夫核 | 概率核 | `Kernel`、`IsMarkovKernel`；绝不单写「核」。 |
+| kernel (probability) / Markov kernel | 概率核 / 马尔可夫核 | — | `Kernel` 称概率核，`IsMarkovKernel` 称马尔可夫核；绝不单写「核」。 |
 | filtration | 滤流 | σ-代数流（PKU） | USTC；首次出现写「filtration（滤流；与滤子 `Filter` 无关）」。 |
 | adapted process | 适应过程 | — | USTC。 |
 | stopping time | 停时 | — | NJU 129, USTC, WP；`IsStoppingTime`。 |
@@ -345,7 +345,7 @@
 | Gaussian / normal distribution | 正态分布（高斯分布） | — | WP；`gaussianReal`。 |
 | uniform distribution | 均匀分布 | — | WP；`uniformOn`。 |
 | total variation distance | 全变差距离 | — | WP。 |
-| coupling | 耦合 | — | [M]。 |
+| coupling | 耦合 | — | †。 |
 | empirical measure | 经验测度 | — | SCI。 |
 | exponential tilting | 指数倾斜 | Esscher 变换 | Mathlib `Measure.tilted`；中文来源较弱，Esscher 变换作别称。 |
 
@@ -364,7 +364,7 @@
 | concentration inequality | 集中不等式 | — | WP, Zhihu。 |
 | concentration of measure | 测度集中现象 | — | NJU。 |
 | tail bound | 尾界 | — | Zhihu 高维概率。 |
-| union bound | 联合界 | 布尔不等式（WP） | NJU 保留英文；联合界为 [M]；`measure_union_le`、`measure_biUnion_finset_le`。 |
+| union bound | 联合界 | 布尔不等式（WP） | NJU 保留英文；联合界为 †；`measure_union_le`、`measure_biUnion_finset_le`。 |
 | linearity of expectation | 期望的线性性 | — | NJU。 |
 | probabilistic method | 概率方法 | 概率法（NJU） | WP；本书用「概率方法」。 |
 | first-moment method | 一阶矩方法 | — | NJU。 |
@@ -391,14 +391,14 @@
 | degree | 度 | — | OI；入度 / 出度用于有向图。 |
 | neighbor set | 邻点集 | 邻域（OI） | OI；`neighborSet`；邻域一词留给拓扑。 |
 | subgraph | 子图 | — | OI；`Subgraph`。 |
-| induced subgraph | 导出子图 | 诱导子图（OI） | † 研究笔记未定（OI 作诱导，WP 作导出）；本书取《图论》教材通行的「导出子图」[M]，`induce`。 |
+| induced subgraph | 导出子图 | 诱导子图（OI） | † 研究笔记未定（OI 作诱导，WP 作导出）；本书取《图论》教材通行的「导出子图」，`induce`。 |
 | walk | 途径 | 道路、通道 | OI；`Walk`，顶点可重复的相邻点序列。 |
 | trail | 迹 | — | OI；`IsTrail`，边不重复。 |
 | path | 路径 | 道路（WP）；链 | OI；`IsPath`，顶点不重复；他书用词可能与「途径」错位，须用上下文校对。 |
 | circuit | 回路 | — | OI；`IsCircuit`，闭迹。 |
 | cycle | 圈 | — | OI；`IsCycle`。 |
 | connected | 连通 | — | OI；`Connected`。 |
-| reachable | 可达 | — | [M]；`Reachable`。 |
+| reachable | 可达 | — | †；`Reachable`。 |
 | connected component | 连通分量 | — | OI。 |
 | tree | 树 | — | OI；`IsTree`。 |
 | clique | 团 | — | OI；k-clique 称「k-团」（NJU）；`IsClique`。 |
@@ -425,9 +425,9 @@
 | large deviations | 大偏差 | 大偏离 | 大偏差 CASB, 力学进展, SCI；非「大偏离」。 |
 | large deviation principle (LDP) | 大偏差原理 | — | SCI。 |
 | rare event | 稀有事件 | 罕见事件（力学进展） | JS。 |
-| rate function | 速率函数 | 率函数 [M] | SCI, JS。 |
+| rate function | 速率函数 | 率函数（†） | SCI, JS。 |
 | good rate function | 好速率函数 | 紧速率函数 | JS, SCI；好 = 水平集紧。 |
-| exponentially tight | 指数紧 | — | [M]，无中文来源，待核。 |
+| exponentially tight | 指数紧 | — | † 无中文来源，待核。 |
 | log moment-generating function | 对数矩母函数 | — | JS；即「累积量母函数」。 |
 | Legendre–Fenchel transform | Legendre–Fenchel 变换 | 勒让德变换；凸共轭（WP） | JS, WP；Mathlib 在 v4.35 无此对象。 |
 | convex conjugate | 凸共轭 | — | WP。 |
@@ -435,7 +435,7 @@
 | Sanov's theorem | Sanov 定理 | 萨诺夫（CASB） | 保留拉丁。 |
 | Varadhan's lemma | Varadhan 积分引理 | — | SCI。 |
 | contraction principle | 压缩原理 | — | SCI。 |
-| Gärtner–Ellis theorem | Gärtner–Ellis 定理 | — | [M]；保留拉丁。 |
+| Gärtner–Ellis theorem | Gärtner–Ellis 定理 | — | †；保留拉丁。 |
 | relative entropy / KL divergence | 相对熵（KL 散度） | — | JS, WP。 |
 
 ### B.8　序与代数结构
@@ -485,7 +485,7 @@
 | `𝓟 s` | 「s 的主滤子」 | `Filter.principal s`；需 `open Filter`。 |
 | `∑ x ∈ s, f x` | 「对 s 中的 x，f x 求和」 | `Finset.sum`；全局可用；`∏` 同理为求积。 |
 | `#s` | 「s 的基数」 | `Finset.card s`；需 `open Finset`。 |
-| `μ[X]` | 「X 关于 μ 的期望」 | 宏 `μ[X]` 展开为 `∫ x, X x ∂μ`；需 `open ProbabilityTheory`，与列表的 `l[i]` 可能冲突。 |
+| `μ[X]` | 「X 关于 μ 的期望」 | 宏 `μ[X]` 展开为 `∫ x, ↑(X x) ∂μ`；需 `open ProbabilityTheory`，与列表的 `l[i]` 可能冲突。 |
 | `𝔼[X]` | 「X 的期望」 | 对 `volume` 的期望，展开为 `∫ a, X a`；需 `open ProbabilityTheory`。 |
 | `𝔼 i ∈ s, f i` | 「对 s 取 f 的平均」 | `Finset.expect`；需 `open scoped BigOperators`。 |
 | `Var[X; μ]` | 「X 关于 μ 的方差」 | `ProbabilityTheory.variance X μ`；`Var[X]` 取 `volume`；需 `open ProbabilityTheory`。 |
@@ -501,7 +501,7 @@
 | `⨆ i, f i` / `⨅ i, f i` | 「f i 的上确界 / 下确界」 | `iSup` / `iInf`；`⨆ i ∈ s` 等是带条件的形式。 |
 | `ℝ≥0` | 「非负实数」 | `NNReal`；需 `open scoped NNReal`。 |
 | `ℝ≥0∞` | 「扩展非负实数」 | `ENNReal`，即 `[0, ∞]`；需 `open scoped ENNReal`。 |
-| `∞` | 「无穷（大）」 | 在 `ℝ≥0∞` 中是 `⊤`；在 `ℝ` 中不存在。 |
+| `∞` | 「无穷（大）」 | 在 `ℝ≥0∞` 中是 `⊤`，在 `ℝ` 中不存在；需 `open scoped ENNReal`。 |
 | `G(V, p)` | 「顶点集 V、边概率 p 的二项随机图」 | `SimpleGraph.binomialRandom V p`，`SimpleGraph V` 上的测度；需 `open SimpleGraph`。 |
 | `Ber(x, y, p)` | 「以 p 取 x、以 1−p 取 y 的伯努利分布」 | `bernoulliMeasure x y p`，其中 `p : unitInterval`；需 `open ProbabilityTheory`。 |
 | `Bin(n, p)` | 「参数 n、p 的二项分布」 | `ProbabilityTheory.binomial n p`，`ℕ` 上的测度；需 `open ProbabilityTheory`。 |
@@ -510,7 +510,7 @@
 | `α ≃ β` | 「α 与 β 之间的等价对应」 | `Equiv`；此处不是逻辑等价。 |
 | `G ≃g H` | 「G 与 H 同构」 | `SimpleGraph.Iso`。 |
 | `⊢` | 「推出」，或读作「目标是」 | infoview 中分隔上下文与目标，不是输入的记号。 |
-| `?_` | 「新目标」 | `refine`、`exact` 中产生新目标的洞。 |
+| `?_` | 「新目标」 | `refine`、`apply`、`calc` 中产生新目标的洞。 |
 | `·`（项首） | 「聚焦到第一个目标」 | 策略块的聚焦项，对目标逐一处理。 |
 | `<;>` | 「对每个新目标运行」 | `t₁ <;> t₂`：运行 `t₁` 后对产生的每个目标运行 `t₂`。 |
 | `∎` | 「证毕」 | 排版用的证毕符号，**不是** Lean 或 Mathlib 记号；代码里不要写。 |
