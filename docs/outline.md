@@ -20,7 +20,7 @@
 | 1 | 环境、工作流与第一份文件 | Windows 上 elan（Scoop）/VS Code/Lean 4 扩展；打开本 repo；infoview 读法；Unicode 输入；`lake build`/`lake env lean`；文件头逐行解释（`module`、`public import`、`@[expose] public section`、`autoImplicit=false`）；`#check`/`#eval`/`#print`；MWE 与提问礼仪；版本锁定与 `lake update` 的危险；PowerShell 5.1 编码陷阱 | — |
 | 2 | 从 NNG 到 Mathlib：计算与重写 | NNG 之后的第一课，先会"算"：`example`/`theorem` 的写法；在 `ℕ ℤ ℚ ℝ` 上用 `rw`/`calc`/`ring`/`norm_num`/`omega`/`linarith`/`positivity`/`simp` 做代数与不等式计算；`exact?` 初体验；读目标状态；`Nat` 减法/除法截断等"垃圾值"约定；`ℕ→ℝ` 的 `↑` 初识 | 1 |
 | 3 | 类型、项与命题 | 一切皆有类型；`fun`、函数应用、柯里化；`Prop` vs `Type`；命题即类型、证明即项（Curry–Howard）；`theorem` 就是 `def`；隐式参数 `{}` 与 `@`；`Type*`、宇宙的最小必要知识；项模式证明 `→ ∧ ∨ ↔ ¬ ∀ ∃`（`⟨⟩`、`.1/.2`、`Or.inl`、`absurd`、`fun h ↦`） | 2 |
-| 4 | 策略即构造项：逻辑与量词 | `by` 块与目标状态；`intro/exact/apply/refine ?_/constructor/left/right/rcases/obtain/rintro/exfalso/contradiction`；同一证明的项式与策略式对照；`·` 聚焦、`<;>`、`case`；`have/show/suffices`；经典逻辑：`by_contra`、`by_cases`、`push Not`（`push_neg` 已弃用）、`contrapose!`、`tauto`；`∃` 的 `use`/`obtain`；`∃!`；`constructor` 对 `Or` 的歧义警告 | 3 |
+| 4 | 策略即构造项：逻辑与量词 | `by` 块与目标状态；`intro/exact/apply/refine ?_/constructor/left/right/rcases/obtain/rintro/exfalso/contradiction`；同一证明的项模式与策略模式对照；`·` 聚焦、`<;>`、`case`；`have/show/suffices`；经典逻辑：`by_contra`、`by_cases`、`push Not`（`push_neg` 已弃用）、`contrapose!`、`tauto`；`∃` 的 `use`/`obtain`；`∃!`；`constructor` 对 `Or` 的歧义警告 | 3 |
 | 5 | 等式、simp 与证明的骨架 | `Eq` 与 `rfl`；定义相等 vs 命题相等（`0 + n` 不是 defeq）；`rw` 细节（`←`、`at`、不能进 binder、motive 错误与 `rw!`）；`simp` 机制（simp 集、`@[simp]`、`simp only`、`simp?`、`simpa`、`simp at`、`+arith` 配置语法、simp 正规形：`ne_eq`、`n+1`）；`calc` 完整语法；`congr`/`congrArg`/`subst`/`ext`/`funext`；`decide` 的边界 | 4 |
 | 6 | 归纳类型、结构体与递归 | `inductive`、构造子、`match`；`cases`/`induction … with`（`0`/`n+1` 形式）；`Nat`/`List`/`Option` 的归纳本质；`structure`（4.18 新语法）、投影、匿名构造子、`deriving`；结构递归；`termination_by`/`decreasing_by` 初识、良基递归默认不可约；自定义函数的证明：`simp [f]`、`f.eq_1`、`unfold`、`fun_induction`；`Decidable`（4.35 新定义）与 `decide` | 5 |
 | 7 | 集合、函数与子类型 | `Set α := α → Prop`，`{x \| p x}` 即 `Set.ofPred`，`Set.mem_ofPred_eq`（`mem_setOf_eq` 已弃用）；`∈ ⊆ ∩ ∪ ᶜ \`、`Set.ext`；`Function.Injective/Surjective/Bijective`、`Set.image/preimage`；`Subtype`、`↥`；`choose` 策略、`Classical.choose`；`Nonempty/Inhabited`；`Equiv` 初识；第一次真正使用 Mathlib 引理 | 6 |
@@ -36,7 +36,7 @@
 | 12 | 有限和、计数与组合 | `Finset`、`∑ x ∈ s, f x`（`∑ x in s` 已不合法）、`Finset.sum_*`；`#s`、`filter`、`card_filter`、`sum_boole`；双计数；`Fintype`、`Fin n`、`Fin.sum_univ_succ`；`Nat.choose`、`powersetCard`；鸽巢；小情形 `decide`；`Finset.induction_on`（case 名）；`Nat.card/Set.ncard/Fintype.card/Finset.card` 的换算 | 11 |
 | 13 | 证明的组织、调试与风格 | 自顶向下 `sorry` 分解；`have/suffices/obtain/set/wlog/generalize`；`induction … generalizing`、强归纳（本书统一用 `induction n using Nat.strong_induction_on with \| _ n ih`）、`Nat.le_induction`；`fin_cases/interval_cases`；`convert/congr!`；`extract_goal`；读懂错误信息；`maxHeartbeats`、`set_option trace`；`conv`；Mathlib 风格指南与 linter | 12 |
 | 14 | 滤子与极限：Mathlib 的分析语言 | `Filter`、`Tendsto`、`atTop`、`𝓝`、`∀ᶠ`、`filter_upwards`；ε–N 与滤子互译（`Metric.tendsto_atTop`）；极限的代数、夹逼、`Tendsto.comp`；常用序列极限引理（`tendsto_const_div_atTop_nhds_zero_nat` 等）；`limsup/liminf`、`Summable/tsum`、`IsBigO` 速览；`IsOpen/Continuous/Metric.ball` 最小集 | 13 |
-| 15 | 构造结构与层级（设计者视角） | `structure/class/extends`、实例设计与优先级、`outParam`；真实的类链（`Semigroup → MulOne → Monoid → … → Group`）；`SetLike` 与子结构；态射与 bundled maps（`→+*`、`⇑`、`FunLike`）；商（`Setoid/Quotient/QuotientGroup`）；`variable` 语义（4.11 后）、`include/omit`；`@[to_additive]` 的使用；案例：自定义加权图结构并为其写实例 | 14 |
+| 15 | 构造结构与层次结构（设计者视角） | `structure/class/extends`、实例设计与优先级、`outParam`；真实的类链（`Semigroup → MulOne → Monoid → … → Group`）；`SetLike` 与子结构；态射与 bundled maps（`→+*`、`⇑`、`FunLike`）；商（`Setoid/Quotient/QuotientGroup`）；`variable` 语义（4.11 后）、`include/omit`；`@[to_additive]` 的使用；案例：自定义加权图结构并为其写实例 | 14 |
 
 ## 第 III 部分　测度、概率与图（Mathlib for probability and graphs）
 
@@ -64,7 +64,7 @@
 | 25 | 程序验证 | 递归函数性质证明、`fun_induction`、方程引理；`decide`/`decide +kernel`/`native_decide`（每次使用添加专属公理；Mathlib 禁止）；`Array` 下标与 `Fin`；`plausible` 找反例；`#guard`；`vcgen`（4.35，实验性）速览；案例：验证插入排序变体或 GCD | 24 |
 | 26 | 记号、宏与语法扩展 | `notation/infix/prefix`（自动 unexpander）、`scoped/local`；`syntax + macro_rules`、`macro`、`declare_syntax_cat`；引用与反引用、卫生；策略宏；模块系统下的 `meta`（`public meta section`、辅助函数需 `meta def`）；案例：小型 DSL | 24 |
 | 27 | 元编程：Expr、MetaM 与策略编写 | `Expr`、`MetaM`（`whnf/isDefEq/inferType/mkAppM`）、`TermElabM`、`elab`；`TacticM`、`getMainGoal`、`MVarId` 操作、`liftMetaTactic`；`Qq` 速览；`simproc`、`@[norm_num]/@[positivity]/@[aesop]` 扩展；`to_additive` 原理；`@[app_delab]`；Mathlib 策略文件解剖；案例：写一个真正的策略 | 26 |
-| 28 | 类型论与内核机制 | 依值类型（Π/Σ）、宇宙多态、`Sort u`、`Prop` 非直谓、无累积性、证明无关与子单元消去；归纳类型与递归子、非递归结构体的 eta、`Quot`；公理（`propext/Classical.choice/Quot.sound`、`#print axioms`）；定义相等与六级透明度、`whnf`、内核加速的 `Nat` 运算；精译器 vs 内核；合一与类型类解析（tabled、优先级、`outParam`）；强制转换机制；模块系统内部（三种 olean、`@[expose]`、meta 阶段）；heartbeats；证明验证阶梯与 2026 内核修复 | 27 |
+| 28 | 类型论与内核机制 | 依值类型（Π/Σ）、宇宙多态、`Sort u`、`Prop` 非直谓、无累积性、证明无关与子单元消去；归纳类型与递归子、非递归结构体的 eta、`Quot`；公理（`propext/Classical.choice/Quot.sound`、`#print axioms`）；定义相等与六级透明度、`whnf`、内核加速的 `Nat` 运算；精译器 vs 内核；合一与实例合成（tabled、优先级、`outParam`）；强制转换机制；模块系统内部（三种 olean、`@[expose]`、meta 阶段）；heartbeats；证明验证阶梯与 2026 内核修复 | 27 |
 
 ## 附录
 
@@ -74,7 +74,7 @@
 
 1. 一切行为性断言都要有同文件内的编译示例作证（含用 `#guard_msgs` 固定的错误信息）。
 2. 计算先行（第 2 章），理论就近引入：类型论概念只在首次需要时讲，讲透一次，后续引用。
-3. 项式与策略式双视角贯穿第 3–6 章，直到读者能把任何策略证明"翻译"成项。
+3. 项模式与策略模式双视角贯穿第 3–6 章，直到读者能把任何策略证明"翻译"成项。
 4. 第 9 章之后所有示例使用真实 Mathlib 名字与真实数学对象（`ℝ`、`Finset`、`Measure`），不再用玩具类型。
 5. 每章练习至少三分之一复习前几章内容；capstone 章用 guided project（陈述给定、步骤留空）。
 6. 主动标注 2024–2026 的更名与弃用（`push Not`、`Set.ofPred`、`field`、`integral_finsetSum`、`uniformOn` 取代 `PMF.uniformOfFintype`、`ite_eq_left` 取代 `if_pos` 等），并教读者自己读弃用警告。

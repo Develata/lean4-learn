@@ -57,7 +57,7 @@ end
 
 ## 3. Language
 
-- Prose (everything inside `/-! … -/` and `/-- … -/`) is Chinese. Technical terms may stay in English, and the first occurrence of a term in a chapter uses the form fixed in `docs/glossary.md`, e.g. 「elaborator（繁饰器）」 — follow the glossary exactly.
+- Prose (everything inside `/-! … -/` and `/-- … -/`) is Chinese. Technical terms may stay in English, and the first occurrence of a term in a chapter uses the form fixed in `docs/glossary.md`, e.g. 「elaborator（精译器；另译繁饰器）」 — follow the glossary exactly.
 - Identifiers, lemma names, tactic names, option names, file paths, error messages: English, verbatim, in backticks.
 - Line comments (`--`) may be English or short Chinese. Comments that show the goal state use the exact infoview rendering, e.g. `-- ⊢ n + 0 = n`.
 - Math may be bilingual; notation follows Mathlib's rendering (`∑ i ∈ s, f i`, `μ.real s`, `∀ᵐ ω ∂μ`).
