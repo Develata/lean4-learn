@@ -76,7 +76,7 @@ end
    example (a b : ℕ) : a + b = b + a := Nat.add_com a b
    ```
    Workflow: write `#guard_msgs in` with an empty docstring, compile, and copy the generated message from the `#guard_msgs` mismatch report (it prints the actual text). `#guard_msgs` text omits the CLI's error code (`error(lean.unknownIdentifier):` in the terminal is just `error:` here) and normalizes whitespace. Never type an error message from memory.
-4. 「练习」 section: 8–15 exercises, each with a docstring `/-- 练习 N.k（★）：…description… -/`, named `ex_N_k`, body `:= by sorry` (or `:= sorry` for terms). Difficulty ★ (direct application), ★★ (combines two ideas), ★★★ (needs a search or a new idea). At least one third revisits earlier chapters.
+4. 「练习」 section: 8–15 exercises, each with a docstring `/-- 练习 N.k（★）：…description… -/`, named `ex_N_k`, body `:= by sorry` (or `:= sorry` for terms). Difficulty ★ (direct application), ★★ (combines two ideas), ★★★ (needs a search or a new idea). At least one third revisits earlier chapters (chapter 1 is exempt: it has no earlier chapters).
 5. 「小结」: a cheat-sheet table (concept → syntax → when to use).
 6. 「延伸阅读」: 3–6 pointers with locators (reference manual section names/URLs, Mathlib file paths, book chapter names). No bare "see the docs".
 
