@@ -419,16 +419,17 @@ theorem double_neg_elim {p : Prop} : ¬¬p → p := by
   -- hnn : ¬¬p, hn : ¬p ⊢ False
   exact hnn hn
 
-example {p q : Prop} (h : p → q) : ¬q → ¬p := by
+theorem contra_neg_demo {p q : Prop} (h : p → q) : ¬q → ¬p := by
   intro hnq
   by_contra hp
   -- h : p → q, hnq : ¬q, hp : p ⊢ False（不是 `hp : ¬¬p`）
   exact hnq (h hp)
 
 /-!
-经典推理要付出代价：`#print axioms`（第 3 章 §8.8）列出定理依赖的 axiom（公理）。`by_cases` 与 `by_contra`
-都不是魔法，它们依赖的公理与第 3 章 `dne'` 里的 `Classical.byContradiction` 一样（`propext` 见第 3 章 §8.5，
-机制见第 28 章）：
+经典推理可能要付出代价，也可能不要：`#print axioms`（第 3 章 §8.8）列出定理依赖的 axiom（公理）。对**任意**
+命题 `p`，它没有可判定性实例，`by_cases` 只能借助 `Classical.propDecidable`，`by_contra` 也只能退到
+`Classical.byContradiction`，所以下面这两个关于任意命题的例子依赖的公理，与第 3 章 `dne'` 里的
+`Classical.byContradiction` 一样（`propext` 见第 3 章 §8.5，机制见第 28 章）：
 -/
 
 /--
@@ -442,6 +443,35 @@ info: 'Lean4Learn.Ch04.double_neg_elim' depends on axioms: [propext, Classical.c
 -/
 #guard_msgs in
 #print axioms double_neg_elim
+
+/-!
+但**策略本身不等于经典公理**。`by_cases` 的实现是 `open Classical in` 加 `if h : p then … else …`，
+经典的判定实例优先级最低，所以对 `ℕ` 上的 `n = 0` 这类已有 `Decidable` 实例的命题，用的是现成实例；
+`by_contra` 则先检查目标是否是否定（是就直接引入假设，上面的 `contra_neg_demo`），再检查目标是否可判定
+（是就用 `Decidable.byContradiction`），最后才用 `Classical.byContradiction`（Batteries 的
+`by_contra_core`，`Batteries/Tactic/Init.lean`）。三个对照例子，输出请自己对一对：
+-/
+
+theorem by_cases_nat (n : ℕ) : n = 0 ∨ 0 < n := by
+  by_cases h : n = 0
+  · exact Or.inl h
+  · exact Or.inr (Nat.pos_of_ne_zero h)
+
+theorem by_contra_nat (n : ℕ) (h : ¬n = 0) : 0 < n := by
+  by_contra hn
+  exact h (Nat.eq_zero_of_not_pos hn)
+
+/-- info: 'Lean4Learn.Ch04.by_cases_nat' does not depend on any axioms -/
+#guard_msgs in
+#print axioms by_cases_nat
+
+/-- info: 'Lean4Learn.Ch04.by_contra_nat' does not depend on any axioms -/
+#guard_msgs in
+#print axioms by_contra_nat
+
+/-- info: 'Lean4Learn.Ch04.contra_neg_demo' does not depend on any axioms -/
+#guard_msgs in
+#print axioms contra_neg_demo
 
 /-!
 **否定的整理：`push Not`。** 带量词的否定读起来别扭：`¬∀ x, p x` 在经典逻辑里等价于「存在 `x` 使
@@ -520,6 +550,24 @@ example {p q r : Prop} (hpq : p → q) (hqr : q → r) (hp : p) : r := by
 
 example {p : Prop} (h : p → False) : ¬p := by
   change p → False  -- `¬p` 与 `p → False` 定义相等
+  exact h
+
+/-!
+上面说的 linter 可以局部打开来看。`show r` 没有改变目标，不报告；`show p → False` 把 `¬p` 换成了定义相等的
+另一种形状，被报告，并建议改用 `change`：
+-/
+
+/--
+warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+-/
+#guard_msgs in
+set_option linter.style.show true in
+example {p : Prop} (h : p → False) : ¬p := by
+  show ¬p  -- 目标没变：不报告
+  show p → False  -- 目标变了：报告
   exact h
 
 example {p q r : Prop} (hpq : p → q) (hqr : q → r) (hp : p) : r := by

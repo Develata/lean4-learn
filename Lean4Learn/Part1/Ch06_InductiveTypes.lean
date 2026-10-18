@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Data.Nat.Init
 public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.TypeStar
 
 /-!
 # 第 6 章　归纳类型、结构体与递归
@@ -153,19 +154,19 @@ def MyNat.toNat : MyNat → ℕ
 ## 3. 结构递归：树
 
 构造子的字段可以不止一个，也可以带参数。二叉树：叶子没有数据，结点带左子树、值与右子树；
-`(α : Type)` 是类型参数，`Tree ℕ`、`Tree String` 是不同的类型。（本章统一写 `Type`；通用写法 `Type*`
-见第 3 章。）
+`(α : Type*)` 是类型参数，`Tree ℕ`、`Tree String` 是不同的类型。（`Type*` 让定义对所有宇宙层级成立，
+见第 3 章 §7；下面 `#print`、`trace_state` 里因此会出现自动生成的宇宙变量 `u_1`。）
 -/
 
-inductive Tree (α : Type) where
+inductive Tree (α : Type*) where
   | leaf : Tree α
   | node (l : Tree α) (v : α) (r : Tree α) : Tree α
 
-def Tree.size {α : Type} : Tree α → ℕ
+def Tree.size {α : Type*} : Tree α → ℕ
   | leaf => 0
   | node l _ r => l.size + 1 + r.size
 
-def Tree.mirror {α : Type} : Tree α → Tree α
+def Tree.mirror {α : Type*} : Tree α → Tree α
   | leaf => leaf
   | node l v r => node r.mirror v l.mirror
 
@@ -179,7 +180,7 @@ example : (Tree.node .leaf 1 .leaf).size = 1 := rfl
 
 /--
 trace: case node
-α : Type
+α : Type u_1
 l : Tree α
 v : α
 r : Tree α
@@ -188,7 +189,7 @@ ihr : r.mirror.size = r.size
 ⊢ (l.node v r).mirror.size = (l.node v r).size
 -/
 #guard_msgs in
-theorem Tree.size_mirror {α : Type} (t : Tree α) : t.mirror.size = t.size := by
+theorem Tree.size_mirror {α : Type*} (t : Tree α) : t.mirror.size = t.size := by
   induction t with
   | leaf => rfl
   | node l v r ihl ihr =>
@@ -304,11 +305,11 @@ Option.some : {α : Type u} → α → Option α
 这就是库里的 `List.length_append`：
 -/
 
-def app {α : Type} : List α → List α → List α
+def app {α : Type*} : List α → List α → List α
   | [], ys => ys
   | x :: xs, ys => x :: app xs ys
 
-theorem length_app {α : Type} (xs ys : List α) :
+theorem length_app {α : Type*} (xs ys : List α) :
     (app xs ys).length = xs.length + ys.length := by
   induction xs with
   | nil => simp [app]
@@ -316,7 +317,7 @@ theorem length_app {α : Type} (xs ys : List α) :
     simp [app, ih]      -- 把两边化成 `xs.length` 与 `ys.length` 的线性式
     omega               -- 线性算术，交给 `omega`
 
-example {α : Type} (xs ys : List α) : (xs ++ ys).length = xs.length + ys.length :=
+example {α : Type*} (xs ys : List α) : (xs ++ ys).length = xs.length + ys.length :=
   List.length_append
 
 def safeDiv (a b : ℕ) : Option ℕ :=
@@ -464,7 +465,8 @@ example : myGcd 12 18 = 6 := by decide +kernel
 
 /-!
 （3）在定义前加 `@[semireducible]`，函数回到默认的 semireducible（可展开）级别，`decide` 与 `rfl`
-重新有效。它只在度量是 `ℕ` 值时起作用（v4.27 起；其他度量下它不起作用，Lean 会发出警告），适合小的辅助函数：
+重新有效。它只在度量是 `ℕ` 值时起作用（v4.27 起；其他度量下它不起作用，Lean 会发出警告，见下面的对照），
+适合小的辅助函数：
 -/
 
 @[semireducible] def myGcd' (a b : ℕ) : ℕ :=
@@ -474,6 +476,32 @@ decreasing_by exact Nat.mod_lt _ (by omega)
 
 example : myGcd' 12 18 = 6 := by decide
 example : myGcd' 12 18 = 6 := rfl
+
+/-!
+对照：度量不是 `ℕ` 值时，同样的 `@[semireducible]` 无效，Lean 在属性处发警告。下面按列表本身的大小递归
+（`termination_by xs` 用的是 `sizeOf` 的良基关系，不是 `ℕ` 的 `<`），`decide` 照样卡住：
+-/
+
+/--
+warning: marking functions defined by well-founded recursion as `semireducible` is not effective
+-/
+#guard_msgs in
+@[semireducible] def sumList (xs : List ℕ) : ℕ :=
+  match xs with
+  | [] => 0
+  | x :: rest => x + sumList rest
+termination_by xs
+
+/--
+error: Tactic `decide` failed to reduce
+  @decide (sumList [1, 2] = 3) (instDecidableEqNat (sumList [1, 2]) 3)
+to `true` or `false`.
+
+After unfolding the instances `instDecidableEqNat` and `Nat.decEq`, reduction got stuck at
+  (sumList [1, 2]).beq 3
+-/
+#guard_msgs in
+example : sumList [1, 2] = 3 := by decide
 
 /-!
 ## 10. `Decidable` 与 `decide`
@@ -497,8 +525,32 @@ Decidable p
 
 /-!
 `decide` 先找 `Decidable p` 的实例，把它规约成 `true`；找不到实例就报错。§1、§8 的
-`deriving DecidableEq` 生成的就是 `a = b` 的实例。自定义谓词要自己提供可判定性实例：`IsEvenEx` 是
-`def`，实例合成不会自动展开它：
+`deriving DecidableEq` 生成的就是 `a = b` 的实例。自定义谓词想用 `decide`，可能被两道**互相独立**的障碍
+挡住，下面分开看。
+
+**障碍一：实例合成不展开 `def`。** 谓词 `IsEvenMod` 的内容是 `n % 2 = 0`，而 `n % 2 = 0` 本身是可判定的；
+但 `IsEvenMod 10` 在实例合成的眼里是一个陌生的常量应用，`def` 不会被自动展开，找不到实例。把 `def` 换成
+`abbrev`（可约的缩写）后，实例合成能看穿它，`decide` 就成功了：
+-/
+
+def IsEvenMod (n : ℕ) : Prop := n % 2 = 0
+
+/-- error: failed to synthesize
+  Decidable (IsEvenMod 10)
+
+Hint: Additional diagnostic information may be available using the
+`set_option diagnostics true` command. -/
+#guard_msgs in
+example : IsEvenMod 10 := by decide
+
+abbrev IsEvenAbbrev (n : ℕ) : Prop := n % 2 = 0
+
+example : IsEvenAbbrev 10 := by decide
+
+/-!
+**障碍二：存在量词没有通用的判定算法。** `IsEvenEx` 的内容是 `∃ k, n = 2 * k`，`k` 在 `ℕ` 里无界地
+取值，库里没有对它的通用实例（只有有界量词的实例）。所以即使展开定义（下面第二个例子把它写成 `abbrev`），
+实例仍然找不到；两个障碍都在，原例的报错只是第一个障碍的样子，换成 `abbrev` 并不能修好它：
 -/
 
 def IsEvenEx (n : ℕ) : Prop := ∃ k, n = 2 * k
@@ -511,8 +563,18 @@ Hint: Additional diagnostic information may be available using the
 #guard_msgs in
 example : IsEvenEx 10 := by decide
 
+abbrev IsEvenEx' (n : ℕ) : Prop := ∃ k, n = 2 * k
+
+/-- error: failed to synthesize
+  Decidable (IsEvenEx' 10)
+
+Hint: Additional diagnostic information may be available using the
+`set_option diagnostics true` command. -/
+#guard_msgs in
+example : IsEvenEx' 10 := by decide
+
 /-!
-`instance` 登记一个实例（第 8 章系统讲）；`DecidablePred p` 就是 `∀ a, Decidable (p a)`。
+这时要自己提供算法：`instance` 登记一个实例（第 8 章系统讲）；`DecidablePred p` 就是 `∀ a, Decidable (p a)`。
 `decidable_of_iff` 用一个等价式把实例从另一个命题 `n % 2 = 0` 搬过来，等价式有两个方向：
 -/
 
@@ -601,7 +663,7 @@ structure Old :=
 复习前面章节的题在题干里写明章号。
 -/
 
-def rev {α : Type} : List α → List α
+def rev {α : Type*} : List α → List α
   | [] => []
   | x :: xs => app (rev xs) [x]
 
@@ -624,14 +686,14 @@ theorem ex_6_2 (a b c : MyNat) : (a.add b).add c = a.add (b.add c) := sorry
 theorem ex_6_3 (a b : MyNat) : (a.add b).toNat = a.toNat + b.toNat := sorry
 
 /-- 练习 6.4（★）：列表拼接的结合律（`app` 见 §6）。 -/
-theorem ex_6_4 {α : Type} (xs ys zs : List α) :
+theorem ex_6_4 {α : Type*} (xs ys zs : List α) :
     app (app xs ys) zs = app xs (app ys zs) := sorry
 
 /-- 练习 6.5（★★）：反转不改变长度。提示：对 `xs` 归纳，用 `length_app` 与 `ih`。 -/
-theorem ex_6_5 {α : Type} (xs : List α) : (rev xs).length = xs.length := sorry
+theorem ex_6_5 {α : Type*} (xs : List α) : (rev xs).length = xs.length := sorry
 
 /-- 练习 6.6（★）：镜像两次得到原树（`Tree.mirror` 见 §3）。提示：对 `t` 归纳，`simp [Tree.mirror, ihl, ihr]`。 -/
-theorem ex_6_6 {α : Type} (t : Tree α) : t.mirror.mirror = t := sorry
+theorem ex_6_6 {α : Type*} (t : Tree α) : t.mirror.mirror = t := sorry
 
 /-- 练习 6.7（★★）：用 `fun_induction`（§5）证明 `sumTo n ≤ n * n`。提示：两个情形分别用 `decide` 与 `linarith`。 -/
 theorem ex_6_7 (n : ℕ) : sumTo n ≤ n * n := sorry

@@ -478,8 +478,8 @@ example (x : ℝ) : x ^ (-1 : ℤ) = x⁻¹ := zpow_neg_one x
 example (x : ℝ) : x ^ (1 / 2) = 1 := by norm_num
 
 /-!
-想要平方根，写 `Real.sqrt x`，或把指数写成实数 `x ^ ((1 : ℝ) / 2)`，后者是另一个函数 `Real.rpow`
-（`Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`，本章没有导入它），见第 11 章。
+想要平方根，要用别的函数，不能靠整数除法的指数。具体写法与引理需要本章没有导入的模块，留到第 11 章，
+那里导入并演示。
 
 ## 11. `Decidable` 与 `DecidableEq`
 
@@ -570,7 +570,8 @@ noncomputable def pick3' (p : Prop) (a b : ℕ) : ℕ := if p then a else b
 /-!
 ## 13. `noncomputable` 与 `ℝ`
 
-`noncomputable` 的意思是：这个定义没有可执行代码，`#eval` 与编译都用不了，但在定理里照常使用。`ℝ` 的序是
+`noncomputable` 的意思是：这个定义不生成可执行代码，所以不能直接用 `#eval` 执行；但它照常通过类型检查，
+照常用在定理里，也随所在模块一起构建（本文件含有 `noncomputable def`，整体仍然能编译）。`ℝ` 的序是
 经典的：`Real.decidableLT` 本身是 `noncomputable`，`(1 : ℝ) < 2` 的 `Decidable` 实例最终归结到
 `Classical.choice`，所以 `decide` 失败（第 5 章已见），要用 `norm_num`：
 -/
@@ -596,6 +597,12 @@ def sgn (x : ℝ) : ℤ := if x < 0 then -1 else 1
 noncomputable def sgn' (x : ℝ) : ℤ := if x < 0 then -1 else 1
 
 example : sgn' 3 = 1 := by simp [sgn']
+
+-- 没有可执行代码：`#eval` 要先生成代码，于是报错（`sgn'` 本身在定理里照常可用，见上面的 `example`）
+/-- error: failed to compile definition, consider marking it as 'noncomputable' because it
+depends on 'sgn'', which is 'noncomputable' -/
+#guard_msgs (whitespace := lax) in
+#eval sgn' 3
 
 /-!
 ## 14. 常见错误

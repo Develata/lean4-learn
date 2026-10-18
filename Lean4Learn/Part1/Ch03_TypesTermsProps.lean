@@ -286,6 +286,22 @@ def myId {α : Type*} (a : α) : α := a
 /-- info: id.{u} {α : Sort u} (a : α) : α -/ #guard_msgs in #check id
 
 /-!
+显式写法对照：先 `universe u` 声明宇宙变量，再用 `Type u`。下面的 `myIdU` 与 `myId` 是同一个定义，
+区别只是宇宙变量的名字由你起（`u`），而不是自动生成（`u_1`）。`universe` 声明只在当前区段内有效，
+所以套一个 `section`：
+-/
+
+section UniverseDemo
+
+universe u
+
+def myIdU {α : Type u} (a : α) : α := a
+
+/-- info: Lean4Learn.Ch03.myIdU.{u} {α : Type u} (a : α) : α -/ #guard_msgs in #check myIdU
+
+end UniverseDemo
+
+/-!
 `myId` 能用在 `α := ℕ` 上，但 `Type u` 里的每个类型都不是命题（命题 `p : Prop = Sort 0`，而
 `Type u = Sort (u + 1)`），所以 `α := p` 不合法，`myId` 不能用在证明上；`id` 的 `Sort u` 可以
 （§6）。下面是失败的例子。输出里的 `?_` 是 metavariable（元变量），即精译器还没确定的部分（与
@@ -312,8 +328,9 @@ example {p : Prop} (h : p) : p := myId h
 ## 8. 项模式证明各联结词
 
 写证明项，就是回答两个问题：这个联结词的证明怎样造，又怎样用。证明里经常出现的 `p q r : Prop` 用 `{}` 绑定，使用时由后面显式参数的类型或期望类型推出。`∧ ∨ ¬ ↔ ∃`
-的策略写法见第 4 章 §3–§6，那里的练习 4.1–4.5 就是本章练习的策略版；这里只对 `→`（§5）与 `∀`
-（§8.6）并排给出策略版。
+的策略系统讲解见第 4 章 §3–§6，那里的练习 4.1–4.5 就是本章练习的策略版。为了让你第一次见到
+每个联结词时就能对照两种写法，下面每一小节在项版本之后紧跟一个最短的策略版（`→` 在 §5 已并排给出）：
+策略的用法这里只点到为止，细节以第 4 章为准；每个策略版的注释写出各步之后的目标。
 
 ### 8.1 蕴含 `→`
 **引入**：`fun h ↦ …`；**消去**：函数应用。term 版本里没有目标可看，所以在注释里手写 `fun` 的
@@ -349,6 +366,18 @@ theorem and_swap' {p q : Prop} : p ∧ q → q ∧ p :=
   -- 在 `fun` 的主体里：h : p ∧ q
   -- ⊢ q ∧ p
 
+-- 同一个定理的策略版：`intro` 引入假设，`constructor` 把目标 `q ∧ p` 拆成两个，`exact` 逐个收尾；
+-- 消去既可以用投影 `h.2`，也可以用 `obtain ⟨hp, hq⟩ := h` 把 `h` 拆成两个假设：
+example {p q : Prop} : p ∧ q → q ∧ p := by
+  intro h              -- h : p ∧ q ⊢ q ∧ p
+  constructor
+  · exact h.2          -- ⊢ q
+  · exact h.1          -- ⊢ p
+
+example {p q : Prop} : p ∧ q → q ∧ p := by
+  rintro ⟨hp, hq⟩      -- hp : p, hq : q ⊢ q ∧ p
+  exact ⟨hq, hp⟩
+
 -- 模式 `⟨hp, hq⟩` 把参数拆开；多层合取向右嵌套，`⟨a, b, c⟩` 是 `⟨a, ⟨b, c⟩⟩` 的简写：
 theorem and_assoc' {p q r : Prop} : (p ∧ q) ∧ r → p ∧ (q ∧ r) :=
   fun ⟨⟨hp, hq⟩, hr⟩ ↦ ⟨hp, hq, hr⟩
@@ -366,6 +395,15 @@ theorem or_swap' {p q : Prop} : p ∨ q → q ∨ p :=
   fun h ↦ h.elim Or.inr Or.inl
   -- 在 `fun` 的主体里：h : p ∨ q
   -- ⊢ q ∨ p
+
+-- 策略版：`rcases h with hp | hq` 对两个构造子各开一个分支；`left`、`right` 选择要证析取的哪一边：
+example {p q : Prop} : p ∨ q → q ∨ p := by
+  intro h              -- h : p ∨ q ⊢ q ∨ p
+  rcases h with hp | hq
+  · right              -- hp : p ⊢ q ∨ p，选右边，目标变成 p
+    exact hp
+  · left               -- hq : q ⊢ q ∨ p，选左边，目标变成 q
+    exact hq
 
 /-!
 `match h with | Or.inl hp => … | Or.inr hq => …` 对每个构造子写一种情形，模式可以嵌套
@@ -402,6 +440,18 @@ theorem not_not_intro' {p : Prop} : p → ¬¬p :=
   -- 在 `fun` 的主体里：hp : p, hnp : ¬p
   -- ⊢ False
 
+-- 策略版：目标 `¬¬p` 就是 `¬p → False`，所以 `intro` 一次引入 `hp`，再一次引入 `hnp`，剩下 `False`；
+-- `exfalso` 把任意目标换成 `False`（对应 `False.elim`），`trivial` 证 `True`（对应 `True.intro`）：
+example {p : Prop} : p → ¬¬p := by
+  intro hp hnp         -- hp : p, hnp : ¬p ⊢ False
+  exact hnp hp
+
+example {p q : Prop} (hp : p) (hnp : ¬p) : q := by
+  exfalso              -- ⊢ False
+  exact hnp hp
+
+example : True := by trivial
+
 /-!
 ### 8.5 双向蕴含 `↔`
 `Iff` 是有两个字段 `mp`、`mpr` 的结构体（`mp` 即 modus ponens，`mpr` 是反方向），
@@ -412,7 +462,17 @@ theorem and_comm' {p q : Prop} : p ∧ q ↔ q ∧ p :=
   ⟨fun ⟨hp, hq⟩ ↦ ⟨hq, hp⟩, fun ⟨hq, hp⟩ ↦ ⟨hp, hq⟩⟩
   -- 两个分支的目标：⊢ p ∧ q → q ∧ p 与 ⊢ q ∧ p → p ∧ q
 
+-- 策略版：`constructor` 把 `↔` 拆成 `mp`、`mpr` 两个目标，各开一个 `·` 分支：
+example {p q : Prop} : p ∧ q ↔ q ∧ p := by
+  constructor
+  · rintro ⟨hp, hq⟩    -- ⊢ q ∧ p
+    exact ⟨hq, hp⟩
+  · rintro ⟨hq, hp⟩    -- ⊢ p ∧ q
+    exact ⟨hp, hq⟩
+
 example {p q : Prop} (h : p ↔ q) (hp : p) : q := h.mp hp
+example {p q : Prop} (h : p ↔ q) (hp : p) : q := by
+  exact h.mp hp        -- 消去同样是 `h.mp`、`h.mpr`
 
 -- 逻辑等价 `↔` 与相等 `=` 的桥梁是公理 propositional extensionality（命题外延性）`propext`：
 example {p q : Prop} (h : p ↔ q) : p = q := propext h
@@ -446,6 +506,11 @@ example (p q : ℕ → Prop) (h : ∀ x, p x → q x) (hp : p 3) : q 3 := h 3 hp
 
 example : ∃ n : ℕ, n + 3 = 5 := ⟨2, rfl⟩
 
+-- 策略版：`refine ⟨2, ?_⟩` 给出见证，`?_` 留下一个要证的目标（`use 2` 是常用的快捷写法，第 4 章）：
+example : ∃ n : ℕ, n + 3 = 5 := by
+  refine ⟨2, ?_⟩       -- ⊢ 2 + 3 = 5
+  rfl
+
 theorem exists_imp' {α : Type*} {p : α → Prop} {q : Prop} :
     (∃ x, p x) → (∀ x, p x → q) → q :=
   fun h h' ↦ h.elim h'
@@ -457,6 +522,12 @@ example {α : Type*} {p : α → Prop} {q : Prop} : (∃ x, p x) → (∀ x, p x
   fun ⟨w, hw⟩ h ↦ h w hw
 -- 在 `fun` 的主体里：w : α, hw : p w, h : ∀ x, p x → q
 -- ⊢ q
+
+-- 策略版：`obtain ⟨w, hw⟩ := h` 把存在性假设拆成见证 `w` 与证明 `hw`：
+example {α : Type*} {p : α → Prop} {q : Prop} : (∃ x, p x) → (∀ x, p x → q) → q := by
+  intro h h'           -- h : ∃ x, p x, h' : ∀ x, p x → q ⊢ q
+  obtain ⟨w, hw⟩ := h  -- w : α, hw : p w
+  exact h' w hw
 
 /-!
 ### 8.8 经典逻辑与公理

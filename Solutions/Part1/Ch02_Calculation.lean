@@ -45,7 +45,13 @@ theorem ex_2_6 (n : ℕ) (x : ℝ) : 0 < (n : ℝ) ^ 2 + x ^ 2 + 1 := by
 /-- 练习 2.7（★★）：第 4 节表里的四条，逐一证明（截断减法、`% 0`、`/ 0`、`0 ^ 0`）；每一条各选合适的策略。 -/
 theorem ex_2_7 (n : ℕ) (x : ℝ) :
     n - (n + 1) = 0 ∧ (n + 1) % 0 = n + 1 ∧ x / 0 + 1 = 1 ∧ (0 : ℝ) ^ 0 + 1 = 2 := by
-  exact ⟨by omega, by simp, by simp, by norm_num⟩
+  constructor
+  · omega
+  constructor
+  · simp
+  constructor
+  · simp
+  · norm_num
 
 /-- 练习 2.8（★）：只用 `rw`：先 `pow_succ'`（方向见第 14 节第 1 条），再 `mul_assoc`。 -/
 theorem ex_2_8 (a b : ℝ) (n : ℕ) : a ^ (n + 1) * b = a * (a ^ n * b) := by

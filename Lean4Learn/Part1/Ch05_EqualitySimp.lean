@@ -23,16 +23,17 @@ inductive type（归纳类型）`Eq`，它只有一个 constructor（构造子�
 - 区分 definitional equality（定义相等）与 propositional equality（命题相等），预测 `rfl` 何时成功，
   知道 `decide` 能做什么、在哪里停下；
 - 用 rewriting（重写）`rw`（`←`、`at`、`nth_rw`、side condition（副条件）），读懂它的两类失败，知道
-  binder（引入绑定变量的构造，如 `fun`、`∀`、`∃`）里不能 `rw`，以及 `rw!` 的用途；
+  binder（引入绑定变量的构造，如 `fun`、`∀`、`∃`）里不能直接匹配含绑定变量的子项（不含绑定变量的子项照常可改写），
+  以及 `rw!` 的用途；
 - 说明 simplifier（简化器）的工作方式：simp lemma（simp 引理）、simp set（simp 集）、`@[simp]`、
   `simp only`、`simp?`、`simpa`、`simp at`、`simp +arith`、`simp_rw`，认得 simp normal form（simp 正规形）；
 - 写完整的 `calc`（首行的写法，用 `Trans` 混用 `=`、`≤`、`<`），用 `congr`、`subst`、`ext`、`funext`、
-  `symm`、`trans` 处理等式的结构性步骤，并先搭骨架（`sorry`）再填空。
+  `symm`、`trans` 处理等式的结构性步骤，并先搭骨架（留洞用 `sorry` 或 `?_`）再填空。
 
 ## 前置知识
 第 1 章（`trace_state`、`#guard_msgs`）；第 2 章（`rw`、`simp`、`calc` 的初步用法，`omega`、`ring`、
 `linarith`）；第 3 章（命题即类型，`rfl` 的项）；第 4 章（`intro`、`exact`、`have`、`change`、`suffices`
-与目标状态的读法）。
+与证明状态的读法）。
 -/
 
 @[expose] public section
@@ -82,8 +83,11 @@ example (f g : ℕ → ℕ) (h : f = g) (x : ℕ) : f x = g x := congrFun h x
 ## 2. `rfl` 与定义相等
 
 `rfl : a = a` 的类型是 `?x = ?x`，要让它有类型 `a = b`，elaborator（精译器；另译繁饰器）必须检查 `a` 与
-`b` 是不是 definitional equality（定义相等）：能否通过 β（函数应用）、δ（展开定义）、ι（recursor（递归子）
-作用在构造子上）、ζ（`let`）reduction（规约）化成同一个项。**命题相等**则是「有一个 `a = b` 的证明项」，
+`b` 是不是 definitional equality（定义相等）。最常见的是四种 reduction（规约）：β（函数应用）、δ（展开
+定义）、ι（recursor（递归子）作用在构造子上）、ζ（`let`），能用它们把两边化成同一个项就行。但定义相等
+不止这四种：还有 η（`fun x ↦ f x` 与 `f` 相等；「结构 eta」：`(p.1, p.2)` 与 `p` 相等）和 proof irrelevance
+（证明无关性，同一命题的任意两个证明相等，第 3 章 §9）等规则，完整的列表见参考手册 *The Type System*
+一章。下面的最小例子都由 `rfl` 通过，而且都不靠上面四种规约。**命题相等**则是「有一个 `a = b` 的证明项」，
 可以靠定理、归纳、`simp` 得到。定义相等一定给出命题相等（`rfl`），反过来不然。
 
 先看成功的情形：展开一个 `def`、`Nat.add` 对第二个参数的递归。
@@ -95,6 +99,10 @@ example : double 3 = 6 := rfl                          -- δ 规约后是 3 + 3
 example (n : ℕ) : double n = n + n := rfl              -- 只需展开 `double`
 example (n : ℕ) : n + 0 = n := rfl                     -- `n + 0` 按定义规约成 `n`
 example (n m : ℕ) : n + (m + 1) = (n + m) + 1 := rfl  -- `Nat.add` 对**第二个**参数递归
+
+example (f : ℕ → ℕ) : (fun x ↦ f x) = f := rfl        -- 函数的 η
+example (p : ℕ × ℕ) : (p.1, p.2) = p := rfl           -- 结构体的 η
+example {P : Prop} (h₁ h₂ : P) : h₁ = h₂ := rfl        -- 证明无关性
 
 /-!
 `Nat.add` 的定义对第二个参数做 pattern matching（模式匹配）：`n + 0 ⟶ n`，`n + (m + 1) ⟶ (n + m) + 1`。
@@ -255,8 +263,9 @@ example (m n : ℕ) (h : m ≤ n) : n - m + m = n := by
 /-!
 ## 5. `rw` 的边界：binder 与 motive
 
-**边界一：不能在 binder 里重写。** `∀ x, …`、`∃ x, …`、`fun x ↦ …` 引入 bound variable（绑定变量）`x`。
-`rw` 用 `kabstract` 找模式的实例，跳过含有松散绑定变量的子项；`x + 0` 就含有 `x`，所以 `rw` 报
+**边界一：不能直接匹配含绑定变量的子项。** `∀ x, …`、`∃ x, …`、`fun x ↦ …` 引入 bound variable
+（绑定变量）`x`。`rw` 用 `kabstract` 找模式的实例；`kabstract` 会走进 `fun` 与 `∀` 的内部，但跳过含有
+松散绑定变量的子项（Lean 工具链 `Lean/Meta/KAbstract.lean`）。`x + 0` 含有 `x`，所以 `rw` 报
 「没找到模式」，尽管目标里明明写着 `x + 0`。`∀` 与 `∃` 都是如此：
 -/
 
@@ -280,7 +289,18 @@ example : ∃ x : ℕ, x + 0 = 3 := by
 /-!
 补救办法有三：先 `intro x`（或 `funext x`），让 `x` 变成上下文里的普通变量再 `rw`；用会进入 binder 的
 `simp only`；用 `simp_rw`（Mathlib），它是「逐条规则各跑一遍 `simp only`」。
+
+反过来，要改写的子项**不含**绑定变量时，`rw` 进 binder 毫无问题。下面的 `a` 是 `fun` 外面的变量，
+不依赖 `x`，一次 `rw [h]` 就把 `fun` 里的 `a` 换成 `b`，不必 `funext`：
 -/
+
+example (a b : ℕ) (h : a = b) : (fun x : ℕ ↦ a + x) = (fun x ↦ b + x) := by
+  rw [h]
+
+example (a b : ℕ) (h : a = b) : ∀ x : ℕ, a + x = b + x := by
+  rw [h]
+  intro x
+  rfl
 
 example : ∀ x : ℕ, x + 0 + 1 = x + 1 := by
   intro x
@@ -404,7 +424,7 @@ example (x : ℕ) : x + 0 + 1 = x + 1 := by simp only [add_zero, Nat.add_left_ca
 
 `simp` 会把假设与目标改写成固定的写法，你得认得它们，否则 `exact h` 会对不上。最常见的四条：
 `a ≠ b ⟶ ¬a = b`（`ne_eq`）、`Nat.succ n ⟶ n + 1`（`Nat.succ_eq_add_one`）、`x ≥ y ⟶ y ≤ x`
-（`ge_iff_le`）、`¬x < y ⟶ y ≤ x`（`not_lt`，在线性序上）。被改写的假设在上下文里的位置可能变动
+（`ge_iff_le`）、`¬x < y ⟶ y ≤ x`（`not_lt`，在全序上）。被改写的假设在上下文里的位置可能变动
 （下面 `h₄` 排到了 `h₂` 前面）。再用 `simp only` 逐条点名：四条引理都没被 `linter.unusedSimpArgs`
 报告为多余，说明各自都派上了用场。
 -/
@@ -542,17 +562,41 @@ example (a b c : ℕ) (h₁ : a = b) (h₂ : b = c) : c = a := by
 ## 10. 证明的骨架
 
 `have`、`change`、`suffices` 在第 4 章 §8 已经引入（`show T` 同样接受定义相等的 `T`，但按那里的风格只用来
-标明目标）。本章要的是工作顺序：先写骨架，每个 `have` 都先用 `sorry`；确认骨架本身能把定理推出来；再
-逐个填空。例子：函数 `f` 满足 `f (x + 1) = f x + 2`，要证 `f (x + 2) = f x + 4`。先看填空前的骨架：
-只有 `sorry` 的 `have`，但最后一行已经把结论推出来了。
--/
+标明目标）。本章要的是工作顺序：先写骨架，每个 `have` 都先留一个洞；确认骨架本身能把定理推出来；再
+逐个填空。例子：函数 `f` 满足 `f (x + 1) = f x + 2`，要证 `f (x + 2) = f x + 4`。
 
-/-- warning: declaration uses `sorry` -/
-#guard_msgs in
+平时留洞写 `sorry`。本书约定 `sorry` 只出现在练习里，所以这里把填空前的骨架写在代码块里（它不参与编译）：
+
+```
 example (f : ℝ → ℝ) (hf : ∀ x, f (x + 1) = f x + 2) (x : ℝ) : f (x + 2) = f x + 4 := by
   have h1 : f (x + 1) = f x + 2 := sorry
   have h2 : f (x + 1 + 1) = f (x + 1) + 2 := sorry
   rw [show x + 2 = x + 1 + 1 by ring, h2, h1]; ring
+```
+
+只有 `sorry` 的 `have`，但最后一行已经把结论推出来了。要在可编译的代码里检验同一个骨架，把 `sorry` 换成
+`?_`：它不含 `sorry`，而是把洞变成新目标。下面主目标（骨架的最后一行要证的）排在最前，之后是后写的 `h2`
+的洞、再是 `h1` 的洞（`have … := ?_` 把主目标放到最前面）。`trace_state` 打印第一个目标，即主目标，
+`h1`、`h2` 已在上下文里，只是还没有证明；标签 `refine_2.refine_2` 是 Lean 自动起的名字：
+-/
+
+/--
+trace: case refine_2.refine_2
+f : ℝ → ℝ
+hf : ∀ (x : ℝ), f (x + 1) = f x + 2
+x : ℝ
+h1 : f (x + 1) = f x + 2
+h2 : f (x + 1 + 1) = f (x + 1) + 2
+⊢ f (x + 2) = f x + 4
+-/
+#guard_msgs in
+example (f : ℝ → ℝ) (hf : ∀ x, f (x + 1) = f x + 2) (x : ℝ) : f (x + 2) = f x + 4 := by
+  have h1 : f (x + 1) = f x + 2 := ?_
+  have h2 : f (x + 1 + 1) = f (x + 1) + 2 := ?_
+  · trace_state
+    rw [show x + 2 = x + 1 + 1 by ring, h2, h1]; ring
+  · exact hf (x + 1)
+  · exact hf x
 
 /-!
 再逐个填空。`h1`、`h2` 都是 `hf` 的实例；最后一步也可以写成 `calc`，其中 `congrArg f` 负责改写参数：
@@ -570,7 +614,7 @@ example (f : ℝ → ℝ) (hf : ∀ x, f (x + 1) = f x + 2) (x : ℝ) : f (x + 2
 ## 11. 常见错误
 
 已捕获过的错误：`rfl` 对 `0 + n = n` 失败（§2）；`decide` 含自由变量、在 `ℝ` 上失败（§3）；`rw` 进
-binder、`motive is not type correct`（§5）；`simp` 之后 `exact h` 对不上（先看 §7 的正规形）。再补三个。
+`rw` 匹配含绑定变量的子项、`motive is not type correct`（§5）；`simp` 之后 `exact h` 对不上（先看 §7 的正规形）。再补三个。
 
 **① `simp` 没有任何进展。** 目标里没有 simp 集能处理的东西（`simp` 不看假设 `h`）时，`simp` 报错而不是
 默默不动：
@@ -670,7 +714,7 @@ theorem ex_5_11 (n m : ℕ) (h : n = m) (v : Fin n) (w : Fin m) (hv : v.val = w.
 | `Eq` | `Eq.refl`、`rfl`、`h.symm`、`h₁.trans h₂`、`h ▸ e` | 项模式里直接构造等式 |
 | 定义相等 | `rfl`、`by rfl`、`unfold f` | 两边按 β/δ/ι 规约相同；`0 + n` 对变量 `n` 不行 |
 | `decide` | `decide`、`decide +revert`、`decide +kernel` | 小的可判定命题（`≠`、`<`、有界 `∀`）；`ℝ` 上无效 |
-| `rw` | `rw [h]`、`[← h]`、`at h ⊢`、`nth_rw n [h]` | 精确改写一个子项；进不了 binder |
+| `rw` | `rw [h]`、`[← h]`、`at h ⊢`、`nth_rw n [h]` | 精确改写一个子项；匹配不了含绑定变量的子项 |
 | `rw!` | `rw! [h]`、`rw! (castMode := .all) [h]` | motive is not type correct 时 |
 | `simp` | `simp`、`simp only [l]`、`simp [h]`、`simp at h`、`simpa` | 到正规形；`simp?` 写出 `simp only` |
 | 配置 | `simp +arith`、`simp_all`、`simp_rw [l₁, l₂]` | 线性算术；全部互相简化；按序逐条重写、可进 binder |
@@ -678,7 +722,7 @@ theorem ex_5_11 (n m : ℕ) (h : n = m) (v : Fin n) (w : Fin m) (hv : v.val = w.
 | 结构性步骤 | `congr 1`、`congrArg f h`、`congrFun h x` | 把等式推到函数的参数或函数值上 |
 | `subst`、外延性 | `subst h`、`funext x`、`ext x` | 消去变量，比 `rw` 彻底；函数相等拆成逐点相等 |
 | 方向与拼接 | `symm`、`trans b` | 翻转等式、拆传递链 |
-| 骨架 | `have h : T := sorry`、`change`、`suffices` | 先搭骨架（`sorry`），再填 |
+| 骨架 | `have h : T := sorry`（或 `:= ?_`）、`change`、`suffices` | 先搭骨架（练习之外用 `?_`），再填 |
 
 ## 延伸阅读
 

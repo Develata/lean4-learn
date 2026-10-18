@@ -344,8 +344,9 @@ end                              -- ⑥ 关闭第 ④ 行打开的区段
 ```
 
 这是 Mathlib v4.35.0 的主流写法：Mathlib 的 8624 个源文件全部以 `module` 开头，其中 4933 个用
-`@[expose] public section`（在本地 Mathlib 里用 `rg` 统计），细节见第 28 章。一个文件演示不了跨文件的
-可见性，所以 ①② 的规则按 Lean 参考手册第 5 章概述，没有示例；④ 的"暴露"能用 Mathlib 的定义验证。
+`@[expose] public section`（在本地 Mathlib 里用 `rg` 统计），细节见第 28 章。**坦白一处缺口：**一个文件演示不了
+跨文件的可见性（需要第二个模块，本书不为第 1 章另建文件），所以 ①② 的规则按 Lean 参考手册第 5 章概述，
+本章没有就地示例，请以手册为准；④ 的"暴露"则能用 Mathlib 的定义在下面验证。
 
 ① **`module`**：该文件属于 Lean 的 module system（模块系统）。在模块里，声明默认是 **private（私有）**
 的；只有写了 `public`（公开），或位于 `public section` 之内的声明，才对导入它的文件可见。模块只能导入
@@ -448,22 +449,27 @@ set_option pp.unicode.fun true in
 **自动绑定隐式参数**由选项 `autoImplicit` 控制：打开时，签名里没有绑定的标识符会被悄悄当作新的隐式
 参数。`relaxedAutoImplicit` 为 `true`（核心库的默认值）时，任何原子标识符都可以这样绑定；为 `false` 时，
 只有单个字符后面至多跟数字、下标之类（如 `P`、`α`、`n₁`）的标识符可以。于是拼错变量名不会立刻报错，而是得到一个意想不到的
-陈述。下面把本想写的 `n + 0 = n` 误写成 `n + 0 = m`，并显式打开 `autoImplicit`：
+陈述。下面把本想写的 `n + 0 = n` 误写成 `n + 0 = m`，并显式打开 `autoImplicit`。这里用不起名字的
+`example`，并用 `trace_state` 把目标打印出来（`sorry` 只是占位；演示用的 `example` 什么也不保存，
+不会留下一个假定理）：
 -/
 
-/-- warning: declaration uses `sorry` -/
+/--
+trace: m n : ℕ
+⊢ n + 0 = m
+---
+warning: declaration uses `sorry`
+-/
 #guard_msgs in
 set_option autoImplicit true in
-theorem typoDemo (n : ℕ) : n + 0 = m := sorry
-
-/-- info: @typoDemo : ∀ {m : ℕ} (n : ℕ), n + 0 = m -/
-#guard_msgs in
-#check @typoDemo
+example (n : ℕ) : n + 0 = m := by
+  trace_state
+  sorry
 
 /-!
-Lean 没有抱怨：`m` 成了一个新的隐式参数，定理变成"对任意 `m`，`n + 0 = m`"，一个假命题；它是用 `sorry`
-"证"出来的，所以只有 `sorry` 的警告。再显式关闭 `autoImplicit`，同一个签名就在 `m` 处立刻报错
-（练习 1.5）：
+Lean 没有抱怨：`m` 成了一个新的隐式参数（上面的上下文里多出 `m : ℕ`），要证的是"对任意 `m`，
+`n + 0 = m`"，一个假命题；只有 `sorry` 的警告。所以别写成具名的 `theorem`：那会把一个假命题
+带着 `sorry` 导出去。再显式关闭 `autoImplicit`，同一个签名就在 `m` 处立刻报错（练习 1.5）：
 -/
 
 /--
@@ -474,7 +480,7 @@ Note: It is not possible to treat `m` as an implicitly bound variable here becau
 -/
 #guard_msgs in
 set_option autoImplicit false in
-theorem typoDemo' (n : ℕ) : n + 0 = m := sorry
+example (n : ℕ) : n + 0 = m := sorry
 
 /-!
 ## 10. 版本锁定与 `lake update` 的危险

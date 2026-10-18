@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Data.Nat.Init
 public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.TypeStar
 
 /-!
 # 第 6 章　答案
@@ -42,11 +43,11 @@ def MyNat.toNat : MyNat → ℕ
 
 theorem MyNat.add_succ (n m : MyNat) : n.add m.succ = (n.add m).succ := rfl
 
-inductive Tree (α : Type) where
+inductive Tree (α : Type*) where
   | leaf : Tree α
   | node (l : Tree α) (v : α) (r : Tree α) : Tree α
 
-def Tree.mirror {α : Type} : Tree α → Tree α
+def Tree.mirror {α : Type*} : Tree α → Tree α
   | leaf => leaf
   | node l v r => node r.mirror v l.mirror
 
@@ -54,11 +55,11 @@ def sumTo : ℕ → ℕ
   | 0 => 0
   | n + 1 => sumTo n + (n + 1)
 
-def app {α : Type} : List α → List α → List α
+def app {α : Type*} : List α → List α → List α
   | [], ys => ys
   | x :: xs, ys => x :: app xs ys
 
-theorem length_app {α : Type} (xs ys : List α) :
+theorem length_app {α : Type*} (xs ys : List α) :
     (app xs ys).length = xs.length + ys.length := by
   induction xs with
   | nil => simp [app]
@@ -88,7 +89,7 @@ def log2' (n : ℕ) : ℕ :=
 termination_by n
 decreasing_by omega
 
-def rev {α : Type} : List α → List α
+def rev {α : Type*} : List α → List α
   | [] => []
   | x :: xs => app (rev xs) [x]
 
@@ -115,20 +116,20 @@ theorem ex_6_3 (a b : MyNat) : (a.add b).toNat = a.toNat + b.toNat := by
     omega
 
 /-- 练习 6.4（★）：列表拼接的结合律（`app` 见 §6）。 -/
-theorem ex_6_4 {α : Type} (xs ys zs : List α) :
+theorem ex_6_4 {α : Type*} (xs ys zs : List α) :
     app (app xs ys) zs = app xs (app ys zs) := by
   induction xs with
   | nil => rfl
   | cons x xs ih => simp [app, ih]
 
 /-- 练习 6.5（★★）：反转不改变长度。提示：对 `xs` 归纳，用 `length_app` 与 `ih`。 -/
-theorem ex_6_5 {α : Type} (xs : List α) : (rev xs).length = xs.length := by
+theorem ex_6_5 {α : Type*} (xs : List α) : (rev xs).length = xs.length := by
   induction xs with
   | nil => rfl
   | cons x xs ih => simp [rev, length_app, ih]
 
 /-- 练习 6.6（★）：镜像两次得到原树（`Tree.mirror` 见 §3）。提示：对 `t` 归纳，`simp [Tree.mirror, ihl, ihr]`。 -/
-theorem ex_6_6 {α : Type} (t : Tree α) : t.mirror.mirror = t := by
+theorem ex_6_6 {α : Type*} (t : Tree α) : t.mirror.mirror = t := by
   induction t with
   | leaf => rfl
   | node l v r ihl ihr => simp [Tree.mirror, ihl, ihr]

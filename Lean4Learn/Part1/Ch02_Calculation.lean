@@ -577,8 +577,26 @@ example (a b : ℝ) (ha : 0 < a) (hb : 0 < b) : 0 < a * b := Left.mul_pos ha hb
 example (a b : ℝ) (ha : 0 < a) (hb : 0 < b) : 0 < a * b := mul_pos ha hb
 
 /-!
-**边界。** `exact?` 只找「一步」能关闭目标的引理，不会替你串联两条。下面的目标是真的，但要先 `mul_pos` 再
-`add_pos` 两步，`exact?` 以错误结束（`positivity` 一步就能证）：
+**边界。** `exact?` 的搜索能力有限，不会任意组合库里的引理。它的做法是：先在库里找一条结论能与目标匹配的
+引理，再用 `solve_by_elim`（有深度上限的回溯搜索，`exact?` 取深度 6；源码见 Lean 工具链的
+`Lean/Meta/Tactic/LibrarySearch.lean`）补全这条引理的前提。补前提时只用**局部假设**和 `rfl`、`trivial` 等
+少数默认规则，不再回到库里搜索。所以局部的蕴含链它串得起来：下面 `hf`、`hg` 都是局部假设，`hf a ha`、`hg (f a) …` 两步局部推理被接成
+一个项。外面包着的那层库引理只负责调整形状（具体是哪一个，随 Mathlib 版本和导入而变），不是推理的实质：
+-/
+
+/--
+info: Try this:
+  [apply] exact lt_of_lt_of_eq (hg (f a) (hf a ha)) rfl
+-/
+#guard_msgs in
+example (f g : ℝ → ℝ) (hf : ∀ x, 0 < x → 0 < f x) (hg : ∀ x, 0 < x → 0 < g x) (a : ℝ)
+    (ha : 0 < a) : 0 < g (f a) := by exact?
+
+/-!
+但要用到库里的多条引理时就不行了。下面的目标是真的，要先 `mul_pos` 再 `add_pos`。按上面的做法推断：
+套 `add_pos` 之后，前提 `0 < a` 可由局部假设 `ha` 补上，而前提 `0 < a * b` 要靠库里的 `mul_pos`，
+`solve_by_elim` 不会去库里找它（这是对失败原因的推断，不是 Lean 打印出来的）；`exact?` 以错误结束
+（`positivity` 一步就能证）：
 -/
 
 /-- error: `exact?` could not close the goal. Try `apply?` to see partial suggestions. -/

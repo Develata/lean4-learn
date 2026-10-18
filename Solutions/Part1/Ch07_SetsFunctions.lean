@@ -120,14 +120,14 @@ theorem ex_7_13 {α : Type*} (s : Set α) : s.Nonempty ↔ Nonempty ↥s := by
     exact ⟨x, hx⟩
 
 /-- 练习 7.14（★★）：造一个 `ℤ ≃ ℤ`，它是 `n ↦ 5 - n`。
-提示：`⟨⟨fun n ↦ 5 - n, fun n ↦ 5 - n, ?_, ?_⟩, fun n ↦ rfl⟩`，两条逆律各 `intro n`，`show`，`omega`。 -/
+提示：`⟨⟨fun n ↦ 5 - n, fun n ↦ 5 - n, ?_, ?_⟩, fun n ↦ rfl⟩`，两条逆律各 `intro n`，`change`，`omega`。 -/
 theorem ex_7_14 : ∃ e : ℤ ≃ ℤ, ∀ n, e n = 5 - n := by
   refine ⟨⟨fun n ↦ 5 - n, fun n ↦ 5 - n, ?_, ?_⟩, fun n ↦ rfl⟩
   · intro n
-    show 5 - (5 - n) = n
+    change 5 - (5 - n) = n
     omega
   · intro n
-    show 5 - (5 - n) = n
+    change 5 - (5 - n) = n
     omega
 
 /-- 练习 7.15（★★★）：复习第 4 章的 `by_cases`。Cantor：没有从 `ℕ` 到它的幂集的满射。

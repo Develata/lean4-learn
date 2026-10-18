@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Basic.Nonempty
 public import Mathlib.Data.Int.Notation
+public import Mathlib.Data.Nat.Find
 public import Mathlib.Data.Nat.Notation
 public import Mathlib.Data.Set.Image
 public import Mathlib.Data.Set.Lattice.Indexed
@@ -22,7 +23,7 @@ set（集合）、function（函数）的 injective（单射）、surjective（�
 
 ## 学习目标
 - 说出 `Set α` 在本书的 Mathlib 版本里就是谓词 `α → Prop`，会在 `x ∈ {y | p y}` 与 `p x` 之间互相转换，知道 2026 年
-  `setOf` 改名为 `Set.ofPred`（以及 `*_setOfPred`）的规则；
+  `setOf` 改名为 `Set.ofPred` 的规则（其他命名空间里的同类改名见第 16 章）；
 - 用 `ext`（`Set.ext`）与 `intro x hx` 证明集合恒等式，认得 `∩ ∪ ᶜ \ univ ∅` 的 `mem_` 引理；
 - 使用 image（像）`f '' s` 与 preimage（原像）`f ⁻¹' s`，认得 `⋃ i, s i`；
 - 证明 `Function.Injective`、`Function.Surjective`、`Function.Bijective` 的常见命题（复合、`of_comp`、
@@ -51,10 +52,9 @@ namespace Lean4Learn.Ch07
 
 2026-07-09 起 `setOf` 改名为 `Set.ofPred`，记号 `{x | p x}` 不变。引理名里的 `setOf` 大多按所在命名空间
 机械改写（并非穷尽）：写在 `namespace Set` 里的（全名以 `Set.` 开头）改为 `ofPred`，如 `Set.mem_setOf_eq`
-变成 `Set.mem_ofPred_eq`（§11.1 演示旧名的弃用警告）；其他命名空间的改为 `setOfPred`，如
-`measurableSet_setOf` 变成 `measurableSet_setOfPred`（读源码
-`Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean` 核实；本章不 import 测度论，没有编译演示）。
-没有改的有点记号别名 `Measurable.setOf` 和实例 `Set.decidableSetOf` 等。旧名仍是带弃用警告的别名。
+变成 `Set.mem_ofPred_eq`（§11.1 演示旧名的弃用警告）。旧名仍是带弃用警告的别名。写在其他命名空间里的
+引理（测度论里就有）同样要改名，规则略有不同；本章不 import 测度论，所以不在这里列举，也不做没有演示的
+断言，留到第 16 章（测度论基础）与它们的编译演示放在一起。
 -/
 
 example (p : ℕ → Prop) : {x | p x} = Set.ofPred p := rfl
@@ -64,8 +64,8 @@ def evens : Set ℕ := {n | n % 2 = 0}
 
 /-!
 判断 `x ∈ evens` 有四种写法，都能证明「成员关系就是谓词成立」：`Iff.rfl`（两边定义相等）、
-`rw [Set.mem_ofPred_eq]`、`simp`、以及直接用引理 `Set.mem_ofPred`；`show` 把目标改成定义相等的形式。
-本章统一的做法：`Iff.rfl` 与 `show` 靠的是 `Set` 的定义，随版本易碎，只用来对刚写下的定义做一次性检查；
+`rw [Set.mem_ofPred_eq]`、`simp`、以及直接用引理 `Set.mem_ofPred`；`change` 把目标改成定义相等的形式。
+本章统一的做法：`Iff.rfl` 与 `change` 靠的是 `Set` 的定义，随版本易碎，只用来对刚写下的定义做一次性检查；
 写进引理的证明，走 `Set.mem_ofPred_eq`、`simp` 或 `Set.mem_ofPred`。
 -/
 
@@ -75,7 +75,7 @@ example (x : ℕ) : x ∈ evens ↔ x % 2 = 0 := by simp [evens]
 example (x : ℕ) : x ∈ evens ↔ x % 2 = 0 := Set.mem_ofPred
 
 example : (4 : ℕ) ∈ evens := by
-  show 4 % 2 = 0       -- 成员关系就是把谓词用到 4 上
+  change 4 % 2 = 0       -- 成员关系就是把谓词用到 4 上
   rfl
 
 /-!
@@ -211,7 +211,7 @@ example (f : ℕ → ℕ) (t : Set ℕ) : f '' f ⁻¹' t = f '' (f ⁻¹' t) :=
 
 example (s : Set ℕ) : (fun n : ℕ ↦ n + 1) '' s ⊆ {m | 1 ≤ m} := by
   rintro _ ⟨x, hx, rfl⟩          -- ⊢ (fun n ↦ n + 1) x ∈ {m | 1 ≤ m}，尚未 β 规约
-  show 1 ≤ x + 1                 -- 用 `show` 写出 β 规约且展开成员关系后的目标
+  change 1 ≤ x + 1                 -- 用 `change` 写出 β 规约且展开成员关系后的目标
   omega
 
 /-!
@@ -302,7 +302,7 @@ example {α ι : Type*} (s : ι → Set α) (t : Set α) : (⋃ i, s i) ∩ t = 
 
 下面的函数是用 `fun` 写出的，`intro` 之后假设里留着没有 β 规约的 `(fun n ↦ 2 * n + 1) a`，而 `omega`
 把它当作不透明的原子（§11.5 演示报错）。本章的做法：假设用 `dsimp only at h`（不带引理的 `dsimp`，只做
-β 规约一类的基本化简），目标用 `show` 写出规约后的形式。
+β 规约一类的基本化简），目标用 `change` 写出规约后的形式。
 -/
 
 example {α β : Type*} (f : α → β) :
@@ -318,7 +318,7 @@ example : Function.Injective (fun n : ℕ ↦ 2 * n + 1) := by
 example : Function.Surjective (fun n : ℤ ↦ n + 1) := by
   intro y
   refine ⟨y - 1, ?_⟩         -- 见证 y - 1
-  show y - 1 + 1 = y         -- 目标 `(fun n ↦ n + 1) (y - 1) = y` 的 β 规约形式
+  change y - 1 + 1 = y         -- 目标 `(fun n ↦ n + 1) (y - 1) = y` 的 β 规约形式
   omega
 
 example : ¬ Function.Surjective (fun n : ℕ ↦ n + 1) := by
@@ -389,7 +389,7 @@ theorem succ_bijective : Function.Bijective (fun n : ℤ ↦ n + 1) := by
   refine ⟨fun a b h ↦ ?_, fun y ↦ ⟨y - 1, ?_⟩⟩
   · dsimp only at h
     omega
-  · show y - 1 + 1 = y
+  · change y - 1 + 1 = y
     omega
 
 example : ∀ y : ℤ, ∃! x : ℤ, x + 1 = y :=
@@ -403,7 +403,7 @@ example : ∀ y : ℤ, ∃! x : ℤ, x + 1 = y :=
 
 theorem pred_leftInverse : Function.LeftInverse (fun n : ℤ ↦ n - 1) (fun n : ℤ ↦ n + 1) := by
   intro n
-  show n + 1 - 1 = n
+  change n + 1 - 1 = n
   omega
 
 example : Function.Injective (fun n : ℤ ↦ n + 1) := pred_leftInverse.injective
@@ -460,7 +460,7 @@ example (a b : {n : ℕ // 0 < n}) (h : a.1 = b.1) : a = b := by
 
 example : ↥evens = {x // x ∈ evens} := rfl
 
-def four : evens := ⟨4, by show 4 % 2 = 0; rfl⟩
+def four : evens := ⟨4, by change 4 % 2 = 0; rfl⟩
 
 example : (four : ℕ) = 4 := rfl
 
@@ -512,7 +512,7 @@ noncomputable def succEquiv : ℤ ≃ ℤ := Equiv.ofBijective (fun n : ℤ ↦ 
 
 example (n : ℤ) : succEquiv n = n + 1 := rfl
 example : (succEquiv.trans succEquiv) 0 = 2 := by
-  show (0 : ℤ) + 1 + 1 = 2
+  change (0 : ℤ) + 1 + 1 = 2
   rfl
 
 /-!
@@ -539,9 +539,10 @@ example (s : Set ℕ) (h : s.Nonempty) : h.some ∈ s := h.some_mem
 /-!
 ## 10. 选择公理：`Classical.choose` 与 `choose`
 
-有 `h : ∃ x, p x` 并不能「取出」`x` 做数据：`∃` 住在 `Prop`，而 `Prop` 的消去只能得到 `Prop`
-（第 3 章 §9；§11.4 展示报错）。
-选择公理给出例外：`Classical.choose h : α` 是某个满足 `p` 的 `x`（具体是哪个无从知道），
+有 `h : ∃ x, p x` 并不能直接模式匹配「取出」`x` 做数据：`Exists` 住在 `Prop`，它的消去规则只允许
+结论是命题（`Exists.elim`；`False`、`And` 这类至多一个构造子、字段全是证明的命题是例外，`Exists` 的字段
+`w : α` 不是证明，所以不是，见第 3 章 §9；§11.4 展示报错）。
+没有额外结构时，要靠选择公理：`Classical.choose h : α` 是某个满足 `p` 的 `x`（具体是哪个无从知道），
 `Classical.choose_spec h : p (Classical.choose h)` 证明它满足 `p`。点记号 `h.choose`、`h.choose_spec`
 实际解析为核心库的 `Exists.choose`、`Exists.choose_spec`（`Classical.choose` 的可约化包装），作用相同。
 数据依赖 `Classical.choose` 的 `def` 必须标 `noncomputable`：选择公理只断言存在、不给算法，所以没有可
@@ -570,8 +571,21 @@ example {α β : Type*} {f : α → β} (hf : Function.Surjective f) (b : β) :
 
 /-!
 Mathlib 的 `Function.surjInv h` 用同样的办法定义了这个右逆，性质是 `surjInv_eq`。
-结论：从 `∃` 到数据要付出代价——选择公理，以及丢掉可计算性。能给出显式见证时（如上面 `y - 1`），
-总是优先用见证。
+结论：一般地，从 `∃` 到数据，若手里没有别的结构，就只能求助选择公理，并丢掉可计算性。但额外的结构可以
+提供可计算的见证：自然数上的谓词若可判定，`Nat.find`（第 8 章 §12 用它）接受存在性证明 `h : ∃ n, P n`，
+靠逐个检查来搜索最小的见证，用的是普通 `def`，没有选择公理，也不必 `noncomputable`：
+-/
+
+def firstAbove (h : ∃ n : ℕ, 5 < n) : ℕ := Nat.find h
+
+/-- info: 6 -/
+#guard_msgs in
+#eval firstAbove ⟨6, by decide⟩
+
+example (h : ∃ n : ℕ, 5 < n) : 5 < firstAbove h := Nat.find_spec h
+
+/-!
+能给出显式见证时（如上面 `y - 1`），总是优先用见证。
 
 ## 11. 常见错误
 
@@ -589,7 +603,7 @@ example (p : ℕ → Prop) (x : ℕ) : x ∈ {y | p y} ↔ p x := by
 example (s t : Set ℕ) (x : ℕ) : x ∈ s \ t ↔ x ∈ s ∧ x ∉ t := Set.mem_diff x
 
 /-!
-**2. 想当然的 `Set.mem_def`。** 它不存在（`Set.mem_ofPred_eq`、`Iff.rfl` 或 `show` 才是办法）：
+**2. 想当然的 `Set.mem_def`。** 它不存在（`Set.mem_ofPred_eq`、`Iff.rfl` 或 `change` 才是办法）：
 -/
 
 /-- error: Unknown constant `Set.mem_def` -/
@@ -635,7 +649,7 @@ def bad (h : ∃ n : ℕ, 5 < n) : ℕ := by
 
 /-!
 **5. `omega` 看不见没有 β 规约的函数应用。** 假设里的 `(fun n ↦ 2 * n + 1) a` 被当成原子 `c`，
-反例里 `a`、`b` 与它没有任何关系。先 `dsimp only at h`（目标里则用 `show`）：
+反例里 `a`、`b` 与它没有任何关系。先 `dsimp only at h`（目标里则用 `change`）：
 -/
 
 /--
@@ -723,7 +737,7 @@ theorem ex_7_12 {α β : Type*} (r : α → β → Prop) (h : ∀ a, ∃ b, r a 
 theorem ex_7_13 {α : Type*} (s : Set α) : s.Nonempty ↔ Nonempty ↥s := sorry
 
 /-- 练习 7.14（★★）：造一个 `ℤ ≃ ℤ`，它是 `n ↦ 5 - n`。
-提示：`⟨⟨fun n ↦ 5 - n, fun n ↦ 5 - n, ?_, ?_⟩, fun n ↦ rfl⟩`，两条逆律各 `intro n`，`show`，`omega`。 -/
+提示：`⟨⟨fun n ↦ 5 - n, fun n ↦ 5 - n, ?_, ?_⟩, fun n ↦ rfl⟩`，两条逆律各 `intro n`，`change`，`omega`。 -/
 theorem ex_7_14 : ∃ e : ℤ ≃ ℤ, ∀ n, e n = 5 - n := sorry
 
 /-- 练习 7.15（★★★）：复习第 4 章的 `by_cases`。Cantor：没有从 `ℕ` 到它的幂集的满射。
@@ -744,7 +758,7 @@ theorem ex_7_15 (f : ℕ → Set ℕ) : ¬ Function.Surjective f := sorry
 | 单射、满射、双射 | `Injective`（`hf h`）、`Surjective`、`Bijective` | `intro a b h`；复合、`of_comp` |
 | 子类型 | `{x // p x}`、`⟨x, hx⟩`、`.1/.2`、`↑x`、`Subtype.ext` | 值加证明打包；集合当类型是 `↥s` |
 | 等价对应 | `α ≃ β`、`e x`、`e.symm`、`symm_apply_apply`、`Equiv.ofBijective` | 带逆映射的双射，数据而非命题 |
-| 选择 | `Classical.choose`、`choose f hf using h`、`noncomputable` | 从 `∃` 取数据，付出不可计算的代价 |
+| 选择 | `Classical.choose`、`choose f hf using h`、`noncomputable` | 一般情形从 `∃` 取数据要付出不可计算的代价；可判定的搜索（`Nat.find`）是例外 |
 | `Nonempty` / `Inhabited` | `h.some`、`default`、`Set.Nonempty` | `Prop` 的存在 vs 带元素的类 |
 
 ## 延伸阅读
