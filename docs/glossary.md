@@ -24,8 +24,11 @@
 | term | 项 | 术语（仅指 terminology，不是此义） | 类型论中的项；与级数的「通项」「第 n 项」区分，元编程里的 `Expr` 称「表达式」。 |
 | type | 类型 | — | 与「命题」同属 `Sort`，见「`Sort` / `Prop` / `Type`」行。 |
 | proposition | 命题 | — | 住在 `Prop` 中的类型。 |
-| proof | 证明 | — | 命题的项（居留元）。 |
+| proof | 证明 | — | 命题的项（居留者）。 |
 | proof term | 证明项 | — | 强调「证明即项」的 Curry–Howard 视角时使用。 |
+| inhabitant | 居留者 | 居留元 | † 一个类型的项；命题的居留者就是证明。 |
+| introduction / elimination (rule) | 引入 / 消去 | — | † 联结词或类型的证明项怎样造出（引入）、怎样使用（消去）；构造子对应引入，递归子 / 消去子对应消去。 |
+| witness | 见证 | — | † `∃ x, p x` 的证明里给出的那个 `x`。 |
 | theorem / lemma | 定理 / 引理 | — | `theorem`、`lemma` 为关键字不译；本书只在讲「Mathlib 里有这条引理」时用 `lemma`。 |
 | goal | 目标 | 目的（MIL 中指 target） | 证明状态中 `⊢` 右侧待证的命题（目标 TP 132, MIL 112）。 |
 | hypothesis | 假设 | 前提（TP 8, MP 2, FP 2, MIL 6） | 局部上下文中类型为命题的变量（假设 TP 94, MIL 144）。 |
@@ -62,6 +65,7 @@
 | constructive logic | 构造性逻辑 | — | † 不依赖排中律与选择公理的逻辑。 |
 | Curry–Howard correspondence | 柯里–霍华德对应 | — | WP 柯里-霍华德对应。 |
 | lambda abstraction | λ 抽象 | — | MIL 对照「抽象」；本书源码一律写 `fun`，不写 `λ`。 |
+| currying | 柯里化 | — | † 多参数函数写成「返回函数的函数」，`α → β → γ` 即 `α → (β → γ)`。 |
 
 ### A.3　精译、统一与参数
 
@@ -104,6 +108,8 @@
 | field | 字段 | — | † 结构体的成员；数学的「域」(field) 只用于代数，两者不混。 |
 | projection | 投影 | — | † 取出字段的函数，如 `p.1`、`Prod.fst`。 |
 | anonymous constructor | 匿名构造子 | — | `⟨a, b⟩`（匿名构造子 TP 3, MIL 6）。 |
+| dot notation | 点记号 | — | † `h.f` 这类写法，按 `h` 的类型头部常量 `T` 去找 `T.f`；用「记号」与 notation 一致。 |
+| product type / sum type | 积类型 / 和类型 | — | † `α × β`、`And` 等是积；`α ⊕ β`、`Or` 等是和。 |
 | class | 类 | — | `class` 声明；其居留者是实例。 |
 | `deriving` | 派生 | — | † `deriving` 子句不译，说明时称「派生实例」。 |
 | pattern matching | 模式匹配 | — | 模式匹配 TP 39, MIL 12。 |
@@ -146,6 +152,10 @@
 | simp normal form | simp 正规形 | — | † 反复运用 simp 引理后到达的形式，outline 已用。 |
 | discharger | 副条件处理器 | — | † simp 用来证明引理副条件的子过程。 |
 | congruence | 同余 | — | † `congr` 一族策略的名义；与数论同余无关。 |
+| junk value | 垃圾值 | — | † 数学里无定义的运算在 Lean 中取的约定值，如 `x / 0 = 0`；`0 ^ 0 = 1` 是通行约定，不算垃圾值。 |
+| truncated subtraction | 截断减法 | — | † `ℕ` 上 `a - b = 0`（当 `a < b`）。 |
+| side condition | 副条件 | — | † 引理或重写规则要求额外证明的前提；与「副条件处理器」(discharger) 配套。 |
+| atom (of `omega`, `linarith`) | 原子 | — | † 策略不再分解、当作整体的子项，如 `omega` 眼中的 `x * y`。 |
 
 ### A.6　类型类、实例与强制转换
 
@@ -453,6 +463,7 @@
 | monoid | 幺半群 | — | †；`Monoid`。 |
 | group | 群 | — | †；`Group`。 |
 | ring | 环 | — | MIL 名词表；`Ring`。 |
+| commutative ring / semiring | 交换环 / 交换半环 | — | †；`CommRing`、`CommSemiring`；`ring` 策略的适用范围（`ℕ` 是交换半环）。 |
 | field (algebra) | 域 | — | †；与结构体的「字段」区分。 |
 | ordered field | 有序域 | — | † 在 Mathlib 中由 `Field`、`LinearOrder`、`IsStrictOrderedRing` 三个类共同表达。 |
 | homomorphism | 同态 | — | †。 |
