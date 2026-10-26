@@ -13,7 +13,7 @@
 | 部分 | 章 | 状态 |
 |---|---|---|
 | I 语言与证明的基础 | 1–8 | **已完成**（`Lean4Learn/Part1/`，114 道练习，答案齐全） |
-| II 证明工程 | 9–15 | 写作中 |
+| II 证明工程 | 9–15 | **已完成**（`Lean4Learn/Part2/`，105 道练习，答案齐全） |
 | III 测度、概率与图 | 16–19 | 待写 |
 | IV 研究方向 capstone | 20–23 | 待写（20–22 章的核心定理已有编译通过的原型） |
 | V 元编程、内部机制与编程 | 24–28 | 写作中 |
@@ -28,6 +28,16 @@
 6. [归纳类型、结构体与递归](Lean4Learn/Part1/Ch06_InductiveTypes.lean)
 7. [集合、函数与子类型](Lean4Learn/Part1/Ch07_SetsFunctions.lean)
 8. [类型类与代数结构（使用者视角）](Lean4Learn/Part1/Ch08_TypeClasses.lean)
+
+第 II 部分各章：
+
+9. [在 Mathlib 中找到你要的引理](Lean4Learn/Part2/Ch09_FindingLemmas.lean)
+10. [自动化策略全景与选择](Lean4Learn/Part2/Ch10_Automation.lean)
+11. [不等式与实数](Lean4Learn/Part2/Ch11_Inequalities.lean)
+12. [有限和、计数与组合](Lean4Learn/Part2/Ch12_Finsets.lean)
+13. [证明的组织、调试与风格](Lean4Learn/Part2/Ch13_ProofEngineering.lean)
+14. [滤子与极限：Mathlib 的分析语言](Lean4Learn/Part2/Ch14_Filters.lean)
+15. [构造结构与层次结构（设计者视角）](Lean4Learn/Part2/Ch15_Hierarchies.lean)
 
 ## 环境准备（Windows）
 

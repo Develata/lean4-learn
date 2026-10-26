@@ -8,3 +8,10 @@ public import Lean4Learn.Part1.Ch05_EqualitySimp
 public import Lean4Learn.Part1.Ch06_InductiveTypes
 public import Lean4Learn.Part1.Ch07_SetsFunctions
 public import Lean4Learn.Part1.Ch08_TypeClasses
+public import Lean4Learn.Part2.Ch09_FindingLemmas
+public import Lean4Learn.Part2.Ch10_Automation
+public import Lean4Learn.Part2.Ch11_Inequalities
+public import Lean4Learn.Part2.Ch12_Finsets
+public import Lean4Learn.Part2.Ch13_ProofEngineering
+public import Lean4Learn.Part2.Ch14_Filters
+public import Lean4Learn.Part2.Ch15_Hierarchies
