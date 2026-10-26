@@ -670,7 +670,7 @@ Tactic `cases` failed with a nested error:
 Tactic `induction` failed: recursor `Or.casesOn` can only eliminate into `Prop`
 -/
 #guard_msgs (substring := true) in
-def whichSide {p q : Prop} (h : p ∨ q) : Bool :=
+example {p q : Prop} (h : p ∨ q) : Bool :=
   match h with
   | Or.inl _ => true
   | Or.inr _ => false

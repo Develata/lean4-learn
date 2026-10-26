@@ -490,7 +490,7 @@ example (x : ℝ) : x ^ (1 / 2) = 1 := by norm_num
 /-- error: failed to synthesize instance of type class
   Decidable p -/
 #guard_msgs (substring := true) in
-def pick (p : Prop) (a b : ℕ) : ℕ := if p then a else b
+example (p : Prop) (a b : ℕ) : ℕ := if p then a else b
 
 /-!
 修法之一：把 `Decidable p` 作为假设，由调用者提供（另一种见 §12）：

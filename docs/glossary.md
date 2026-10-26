@@ -52,6 +52,7 @@
 | tactic proof / tactic block | 策略证明 | — | `by` 引入的证明；RM 章名「策略证明」。 |
 | term-mode / tactic-mode | 项模式 / 策略模式 | — | † 区分直接写项与用 `by` 写策略，前五章两者并列对照；outline 里的「项式 / 战术式」同改此二词。 |
 | tactic combinator | 策略组合子 | — | TP 注释；如 `<;>`、`first`、`try`。 |
+| decision procedure | 判定过程 | — | † 对一个固定的逻辑片段保证给出是/否答案的算法（`omega`、`decide`、`ring1`）；第 10 章把自动化分为判定过程、重写、搜索三类。 |
 | hole | 洞 | — | RM；`?_` 产生的待补部分。 |
 | placeholder | 占位符 | 填充 | TP 19；指 `_`，由精译器填入。 |
 | `sorry` | `sorry` | — | 不译；称「`sorry` 占位」，只允许出现在练习里。 |

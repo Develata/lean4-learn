@@ -643,7 +643,7 @@ h : ∃ n, 5 < n
 ⊢ ℕ
 -/
 #guard_msgs in
-def bad (h : ∃ n : ℕ, 5 < n) : ℕ := by
+example (h : ∃ n : ℕ, 5 < n) : ℕ := by
   obtain ⟨n, _⟩ := h
   exact n
 

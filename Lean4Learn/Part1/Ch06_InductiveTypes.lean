@@ -594,14 +594,14 @@ example : ¬ IsEvenEx 7 := by decide
 
 /--
 error: Missing cases:
-wed
-thu
-fri
-sat
-sun
+Weekday.wed
+Weekday.thu
+Weekday.fri
+Weekday.sat
+Weekday.sun
 -/
 #guard_msgs in
-def Weekday.toNat : Weekday → ℕ
+example : Weekday → ℕ
   | .mon => 1
   | .tue => 2
 
@@ -624,14 +624,18 @@ example (n : ℕ) : n + 0 = n := by
 
 /-!
 **3. Lean 猜不出终止性。** 把 §9 的 `myGcd` 去掉 `decreasing_by`：度量 `b` 是对的，但默认策略证不出
-`a % b < b`。报错很长，用 `substring := true` 只核对第一句：
+`a % b < b`。报错很长，用 `substring := true` 只核对第一句。注意 `#guard_msgs` 不会撤销失败的
+定义：报错的 `def` 仍会带着一个 `sorry` 留在环境里。所以本节会报错的反例都写成不留名字的
+`example`；`example` 没有名字可供递归调用，递归函数就放进 `where` 子句（`where` 后面定义的辅助
+函数可以在 `:=` 的右边使用）：
 -/
 
 /-- error: failed to prove termination, possible solutions: -/
 #guard_msgs (substring := true) in
-def myGcd2 (a b : ℕ) : ℕ :=
-  if b = 0 then a else myGcd2 b (a % b)
-termination_by b
+example : ℕ := myGcd2 12 18
+where
+  myGcd2 (a b : ℕ) : ℕ := if b = 0 then a else myGcd2 b (a % b)
+  termination_by b
 
 /-!
 修法就是写出 `decreasing_by`（§9）。像 `bad` 这样根本不终止的函数没有修法，只能改算法或改成对子项
@@ -640,7 +644,8 @@ termination_by b
 
 /-- error: fail to show termination for -/
 #guard_msgs (substring := true) in
-def bad (n : ℕ) : ℕ := bad (n + 1)
+example : ℕ := bad 0
+where bad (n : ℕ) : ℕ := bad (n + 1)
 
 /-!
 **4. 旧的 `structure … :=` 写法。** 4.14 起弃用，改用 `where`：
