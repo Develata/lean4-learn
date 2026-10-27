@@ -34,7 +34,7 @@
 | 社区准则<br><https://leanprover-community.github.io/community_guidelines.html> | Zulip 与 GitHub 上的行为准则 | 明确要求不要用大模型写 Zulip 或 GitHub 评论 | 第 1、23 章 |
 
 Lean 里的 `#loogle`、`#leansearch` 命令会把查询发到上面的外部服务，需要联网，且结果同样来自较新的 Mathlib
-（调研笔记 `_research/10-tooling-ecosystem-windows.md` §2.1、§2.4；第 9 章）。
+（第 9 章 §10）。
 
 ## 3. 中文译本（Lean-zh）
 
