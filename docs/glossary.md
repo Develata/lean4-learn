@@ -157,6 +157,7 @@
 | truncated subtraction | 截断减法 | — | † `ℕ` 上 `a - b = 0`（当 `a < b`）。 |
 | side condition | 副条件 | — | † 引理或重写规则要求额外证明的前提；与「副条件处理器」(discharger) 配套。 |
 | atom (of `omega`, `linarith`) | 原子 | — | † 策略不再分解、当作整体的子项，如 `omega` 眼中的 `x * y`。 |
+| discrimination tree | 判别树 | — | † 按表达式头部形状索引 simp 引理、实例等的树形查找表；只做粗筛，命中后仍要合一。 |
 
 ### A.6　类型类、实例与强制转换
 
@@ -184,6 +185,9 @@
 | metaprogramming | 元编程 | — | MP 书名。 |
 | expression (`Expr`) | 表达式 | — | 表达式 TP 162, MP 193；元编程里的数据结构，与「项」不同。 |
 | pretty printing | 美观打印 | — | MP 章名；`delab` 的任务。 |
+| precedence | 优先级 | — | † 语法的结合强度（`infixl:65`、`term:max`）；与 instance priority（实例优先级）无关。 |
+| delaborator | 反精译器 | 美观打印器 | † 把 `Expr` 转回语法的过程（`delab`），精译器的反方向；美观打印的第一步。 |
+| unexpander | 反展开器 | — | † 在反精译器产生的语法上再做改写（`app_unexpander`）；看不到 `Expr`。 |
 
 ### A.8　命名空间、区段与模块
 
@@ -228,6 +232,26 @@
 | option (`set_option`) | 选项 | — | † 指 `set_option` 所设；与 `Option` 类型区分。 |
 | hash map | 哈希表 | — | † `Std.HashMap`。 |
 | heartbeat | 心跳 | — | † `maxHeartbeats`；精译与策略执行的计算量单位。 |
+| random number generator | 随机数发生器 | 随机数生成器 | † `StdGen`、`randNat`。 |
+| seed | 种子 | — | † 发生器的初始状态，`mkStdGen s` 的 `s`。 |
+| opaque constant | 不透明常量 | — | † 证明中看不到定义体、不能展开的常量（`partial def`、`opaque`）。 |
+
+### A.10　程序验证（第 25 章）
+
+| English | 本书译名 | 其他译法（见于何处） | 说明 |
+|---|---|---|---|
+| specification | 规格说明 | 规约 | † 用命题陈述程序应满足的性质；「规约」留给 reduction（表 A.5）。 |
+| permutation | 重排 | 置换；排列 | † `List.Perm`，两个列表元素相同、顺序可不同；数学里的置换群不在此义。 |
+| accumulator | 累加器 | — | † 尾递归函数里携带中间结果的参数。 |
+| fuel | 燃料 | — | † 人为加上的递归深度参数，把终止性换成对燃料的结构递归。 |
+| counterexample | 反例 | — | † `plausible` 找到的使陈述不成立的输入。 |
+| property-based testing | 性质测试 | — | † 随机生成输入检验一条性质（`plausible`），通过不等于证明。 |
+| intrinsic verification | 内在验证 | — | † 把性质写进类型（子类型、`Fin`），而不是另证定理。 |
+| loop invariant | 循环不变量 | — | † 每次迭代前后都成立的断言，`vcgen` 需要它。 |
+| precondition | 前置条件 | 前条件 | † 调用函数前必须成立的命题。 |
+| weakest precondition | 最弱前置条件 | — | † 保证程序结束后后置条件成立的最弱前置条件；`Std.WP`。 |
+| verification condition | 验证条件 | — | † `vcgen` 把程序正确性拆成的一组待证命题。 |
+| simproc | 简化过程 | — | † 用代码而非引理实现的简化步骤，如 `reduceIte`。 |
 
 ---
 
@@ -240,6 +264,7 @@
 | set | 集合 | — | † Mathlib 的 `Set α` 是 `α → Prop`，是「α 中的子集」而不是独立的类型。 |
 | subset | 子集 | — | † `⊆`；`⊂` 为真子集。 |
 | symmetric difference | 对称差 | — | † `s ∆ t`（需 `open symmDiff`）。 |
+| half-open interval | 半开区间 | — | † 含左端点、不含右端点，`Set.Ico a b`；`Finset.range n` 即 `0 ≤ i < n`。 |
 | power set | 幂集 | — | † `Set.powerset`、`Finset.powerset`。 |
 | image / preimage | 像 / 原像 | 逆像 | † `f '' s`、`f ⁻¹' s`。 |
 | injective | 单射 | — | † `Function.Injective`。 |
@@ -295,6 +320,8 @@
 | measurable space | 可测空间 | — | MIL, PKU；`MeasurableSpace`。 |
 | measurable set | 可测集 | — | MIL, PKU。 |
 | measurable function | 可测函数 | — | PKU, WP；`Measurable`。 |
+| measurable embedding | 可测嵌入 | — | †；`MeasurableEmbedding`：单射、可测，且把可测集映成可测集。 |
+| cylinder set | 柱集 | — | † 只约束有限个坐标的乘积空间子集；`Measure.infinitePi` 由它们上的值确定。 |
 | σ-algebra | σ-代数 | σ-域；σ代数；事件域（PKU） | MIL；亦称 σ-域。 |
 | π-system | π 系 | — | PKU。 |
 | measure | 测度 | 度量（MIL 43，指 metric 等泛义） | MIL 26；永远不写「度量」，见表 D。 |
@@ -353,6 +380,8 @@
 | central limit theorem | 中心极限定理 | — | USTC, WP。 |
 | Borel–Cantelli lemma | Borel–Cantelli 引理 | 波莱尔–坎泰利 | USTC；保留拉丁。 |
 | Bernoulli distribution | 伯努利分布 | — | WP；`Ber(x, y, p)`。 |
+| Monte Carlo method | Monte Carlo 方法 | 蒙特卡罗方法 | † 用随机抽样估计数值；保留拉丁。 |
+| sample path | 样本路径 | — | † 随机过程对一个固定 `ω` 给出的轨迹。 |
 | binomial distribution | 二项分布 | — | †；`Bin(n, p)`。 |
 | Poisson distribution | 泊松分布 | 卜瓦松（WP 台湾译） | NJU 15；本书不用台湾译名。 |
 | Gaussian / normal distribution | 正态分布（高斯分布） | — | WP；`gaussianReal`。 |
@@ -361,6 +390,9 @@
 | coupling | 耦合 | — | †。 |
 | empirical measure | 经验测度 | — | SCI。 |
 | exponential tilting | 指数倾斜 | Esscher 变换 | Mathlib `Measure.tilted`；中文来源较弱，Esscher 变换作别称。 |
+| joint probability | 联合概率 | — | † 几个事件同时发生的概率。 |
+| marginal probability / distribution | 边缘概率 / 边缘分布 | — | † 只看一个坐标（如一条边）时的概率或分布。 |
+| exponential moment | 指数矩 | — | † `E[exp (t X)]`，即矩母函数在 `t` 处的值；「有指数矩」指它有限。 |
 
 ### B.5　不等式与概率方法
 
@@ -369,7 +401,7 @@
 | Markov's inequality | 马尔可夫不等式 | — | NJU, WP。 |
 | Chebyshev's inequality | 切比雪夫不等式 | — | NJU；`meas_ge_le_variance_div_sq`。 |
 | Chernoff bound | Chernoff 界 | — | NJU 36；保留拉丁；Mathlib `measure_ge_le_exp_mul_mgf`。 |
-| Hoeffding's inequality / lemma | 霍夫丁不等式 / 引理 | Hoeffding | NJU 6, WP；通行音译，可用中文。 |
+| Hoeffding's inequality / lemma | Hoeffding 不等式 / 引理 | 霍夫丁不等式（NJU 6, WP） | 按使用规则 5 保留拉丁拼写。 |
 | Azuma–Hoeffding inequality | Azuma–Hoeffding 不等式 | 吾妻不等式（WP） | NJU 21；保留拉丁。 |
 | Bernstein's inequality | 伯恩斯坦不等式 | 伯恩施坦（WP） | TengJiaye 讲义。 |
 | sub-Gaussian | 次高斯 | 亚高斯（CSDN 译文） | 次高斯 Zhihu 高维概率；`HasSubgaussianMGF X c μ` 读作「`X` 具有参数 `c` 的次高斯矩母函数」。 |
@@ -378,6 +410,8 @@
 | concentration of measure | 测度集中现象 | — | NJU。 |
 | tail bound | 尾界 | — | Zhihu 高维概率。 |
 | union bound | 联合界 | 布尔不等式（WP） | NJU 保留英文；联合界为 †；`measure_union_le`、`measure_biUnion_finset_le`。 |
+| deletion method | 删除法 | 修改法 | † 先随机取对象，再删去少数坏结构（如每个三角形删一条边）。 |
+| Orlicz norm | Orlicz 范数 | — | † 次高斯 / 次指数变量的 ψ₂ / ψ₁ 范数；Mathlib 在 v4.35 无此对象。 |
 | linearity of expectation | 期望的线性性 | — | NJU。 |
 | probabilistic method | 概率方法 | 概率法（NJU） | WP；本书用「概率方法」。 |
 | first-moment method | 一阶矩方法 | — | NJU。 |
@@ -402,6 +436,7 @@
 | simple graph | 简单图 | — | OI；`SimpleGraph`。 |
 | adjacent | 相邻 | 邻接 | OI；`Adj`。 |
 | degree | 度 | — | OI；入度 / 出度用于有向图。 |
+| isolated vertex | 孤立点 | 孤立顶点 | † 度为 0 的顶点。 |
 | neighbor set | 邻点集 | 邻域（OI） | OI；`neighborSet`；邻域一词留给拓扑。 |
 | subgraph | 子图 | — | OI；`Subgraph`。 |
 | induced subgraph | 导出子图 | 诱导子图（OI） | † 研究笔记未定（OI 作诱导，WP 作导出）；本书取《图论》教材通行的「导出子图」，`induce`。 |
@@ -410,6 +445,9 @@
 | path | 路径 | 道路（WP）；链 | OI；`IsPath`，顶点不重复；他书用词可能与「途径」错位，须用上下文校对。 |
 | circuit | 回路 | — | OI；`IsCircuit`，闭迹。 |
 | cycle | 圈 | — | OI；`IsCycle`。 |
+| adjacency matrix | 邻接矩阵 | — | † `G.adjMatrix`；第 24 章用 `Array (Array Bool)` 手写。 |
+| self-loop | 自环 | — | † 连接顶点与自身的边；`SimpleGraph` 不允许（`fromRel` 会去掉）。 |
+| path graph | 路径图 | — | † `pathGraph n`，顶点 `0, 1, …, n-1` 依次相连。 |
 | connected | 连通 | — | OI；`Connected`。 |
 | reachable | 可达 | — | †；`Reachable`。 |
 | connected component | 连通分量 | — | OI。 |
@@ -441,6 +479,7 @@
 | large deviation principle (LDP) | 大偏差原理 | — | SCI。 |
 | rare event | 稀有事件 | 罕见事件（力学进展） | JS。 |
 | rate function | 速率函数 | 率函数（†） | SCI, JS。 |
+| speed (of an LDP) | 速度 | 速率 | † LDP 定义里的规范化序列 `aₙ`（本书取 `n`）；与速率函数的「速率」不同。 |
 | good rate function | 好速率函数 | 紧速率函数 | JS, SCI；好 = 水平集紧。 |
 | exponentially tight | 指数紧 | — | † 无中文来源，待核。 |
 | log moment-generating function | 对数矩母函数 | — | JS；即「累积量母函数」。 |
@@ -458,6 +497,7 @@
 | English | 本书译名 | 其他译法（见于何处） | 说明 |
 |---|---|---|---|
 | linear order | 全序 | 线性序 | † Mathlib 的 `LinearOrder`；本书叙述用「全序」。 |
+| complete linear order | 完备全序 | — | †；`CompleteLinearOrder`，如 `EReal`、`ℝ≥0∞`；`ℝ` 只是条件完备全序（`ConditionallyCompleteLinearOrder`）。 |
 | preorder | 预序 | — | †；`Preorder`。 |
 | partial order | 偏序 | — | †；`PartialOrder`。 |
 | lattice | 格 | — | MIL 名词表；`Lattice`。 |
@@ -496,9 +536,9 @@
 | `↑x` | 「强制转换 x」，或「x 的提升」 | 强制转换的显示形式，如 `((n : ℕ) : ℝ)` 显示为 `↑n`；`⇑`、`↥` 是其特化。 |
 | `⇑f` | 「f 的函数形式」 | 把打包映射 `f` 转成函数（`DFunLike.coe`），不读出。 |
 | `↥S` | 「S 的底层类型」 | 把集合或子结构 `S` 转成类型（`CoeSort`）。 |
-| `∀ᶠ x in l, p x` | 「沿 l 最终，p x 成立」 | `Filter.Eventually`；需 `open Filter`。 |
+| `∀ᶠ x in l, p x` | 「沿 l 最终，p x 成立」 | `Filter.Eventually`；全局记号，不需 `open`（`Order/Filter/Defs.lean:284`）。 |
 | `∃ᶠ x in l, p x` | 「沿 l 经常，p x 成立」 | `Filter.Frequently`；需 `open Filter`。 |
-| `∀ᵐ x ∂μ, p x` | 「μ 几乎处处，p x 成立」 | `MeasureTheory.ae` 上的最终成立；概率测度下读「几乎必然」；需 `open MeasureTheory`。 |
+| `∀ᵐ x ∂μ, p x` | 「μ 几乎处处，p x 成立」 | `MeasureTheory.ae` 上的最终成立；概率测度下读「几乎必然」；全局记号，不需 `open`（`MeasureTheory/OuterMeasure/AE.lean:56`）。 |
 | `𝓝 x` | 「x 的邻域滤子」 | `nhds x`；需 `open Topology`。 |
 | `𝓟 s` | 「s 的主滤子」 | `Filter.principal s`；需 `open Filter`。 |
 | `∑ x ∈ s, f x` | 「对 s 中的 x，f x 求和」 | `Finset.sum`；全局可用；`∏` 同理为求积。 |
@@ -507,8 +547,8 @@
 | `𝔼[X]` | 「X 的期望」 | 对 `volume` 的期望，展开为 `∫ a, X a`；需 `open ProbabilityTheory`。 |
 | `𝔼 i ∈ s, f i` | 「对 s 取 f 的平均」 | `Finset.expect`；需 `open scoped BigOperators`。 |
 | `Var[X; μ]` | 「X 关于 μ 的方差」 | `ProbabilityTheory.variance X μ`；`Var[X]` 取 `volume`；需 `open ProbabilityTheory`。 |
-| `∫ x, f x ∂μ` | 「f 关于 μ 的积分」 | Bochner 积分；需 `open MeasureTheory`。 |
-| `∫⁻ x, f x ∂μ` | 「f 关于 μ 的勒贝格积分」 | `lintegral`，取值于 `ℝ≥0∞`；需 `open MeasureTheory`。 |
+| `∫ x, f x ∂μ` | 「f 关于 μ 的积分」 | Bochner 积分；全局记号，不需 `open`（`Integral/Bochner/Basic.lean:168`）。 |
+| `∫⁻ x, f x ∂μ` | 「f 关于 μ 的勒贝格积分」 | `lintegral`，取值于 `ℝ≥0∞`；全局记号，不需 `open`（`Integral/Lebesgue/Basic.lean:56`）。 |
 | `X ⟂ᵢ[μ] Y` | 「X 与 Y 在 μ 下独立」 | `IndepFun X Y μ`；需 `open ProbabilityTheory`。 |
 | `f =ᵐ[μ] g` | 「f 与 g 在 μ 下几乎处处相等」 | `Filter.EventuallyEq (ae μ) f g`；概率测度下读「几乎必然相等」。 |
 | `f ≤ᵐ[μ] g` | 「f 在 μ 下几乎处处小于等于 g」 | 同上，`≤` 版本。 |

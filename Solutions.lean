@@ -19,3 +19,10 @@ public import Solutions.Part3.Ch16_MeasureTheory
 public import Solutions.Part3.Ch17_Probability
 public import Solutions.Part3.Ch18_GraphTheory
 public import Solutions.Part3.Ch19_FiniteProbability
+public import Solutions.Part4.Ch20_RandomGraphs
+public import Solutions.Part4.Ch21_Concentration
+public import Solutions.Part4.Ch22_LargeDeviations
+public import Solutions.Part5.Ch24_Programming
+public import Solutions.Part5.Ch25_Verification
+public import Solutions.Part5.Ch26_Macros
+public import Solutions.Part5.Ch27_Metaprogramming

@@ -60,7 +60,7 @@
 
 | 章 | 标题 | 学习目标 / 核心内容 | 依赖 |
 |---|---|---|---|
-| 24 | Lean 作为函数式编程语言 | 模式匹配、`List/Array/Option/String`（4.27 后 `String.Slice`）、`Std.HashMap`；`do` 记号（4.32 新 elaborator）；单子（`Option/Except/StateM/IO`）；`main` 与 `#eval`；`deriving`；`partial`、`termination_by`；随机数 `StdGen/randNat`；案例：模拟 G(n,p) 并统计度数 | 6 |
+| 24 | Lean 作为函数式编程语言 | 模式匹配、`List/Array/Option/String`（4.27 后 `String.Slice`）、`Std.HashMap`；`do` 记号（4.32 新 elaborator）；单子（`Option/Except/StateM/IO`）；`#eval`（`main` 只作文字说明，未实测）；`deriving`；`partial`、`termination_by`；随机数 `StdGen/randNat`；案例：模拟 G(n,p) 并统计度数，并用 `fromRel` + `decide` 接到 `SimpleGraph`（核对，非证明） | 6（案例与练习另用 2、10、12、13、18；对照 17、20） |
 | 25 | 程序验证 | 递归函数性质证明、`fun_induction`、方程引理；`decide`/`decide +kernel`/`native_decide`（每次使用添加专属公理；Mathlib 禁止）；`Array` 下标与 `Fin`；`plausible` 找反例；`#guard`；`vcgen`（4.35，实验性）速览；案例：验证插入排序变体或 GCD | 24 |
 | 26 | 记号、宏与语法扩展 | `notation/infix/prefix`（自动 unexpander）、`scoped/local`；`syntax + macro_rules`、`macro`、`declare_syntax_cat`；引用与反引用、卫生；策略宏；模块系统下的 `meta`（`public meta section`、辅助函数需 `meta def`）；案例：小型 DSL | 24 |
 | 27 | 元编程：Expr、MetaM 与策略编写 | `Expr`、`MetaM`（`whnf/isDefEq/inferType/mkAppM`）、`TermElabM`、`elab`；`TacticM`、`getMainGoal`、`MVarId` 操作、`liftMetaTactic`；`Qq` 速览；`simproc`、`@[norm_num]/@[positivity]/@[aesop]` 扩展；`to_additive` 原理；`@[app_delab]`；Mathlib 策略文件解剖；案例：写一个真正的策略 | 26 |
@@ -77,5 +77,5 @@
 3. 项模式与策略模式双视角贯穿第 3–6 章，直到读者能把任何策略证明"翻译"成项。
 4. 第 9 章之后所有示例使用真实 Mathlib 名字与真实数学对象（`ℝ`、`Finset`、`Measure`），不再用玩具类型。
 5. 每章练习至少三分之一复习前几章内容；capstone 章用 guided project（陈述给定、步骤留空）。
-6. 主动标注 2024–2026 的更名与弃用（`push Not`、`Set.ofPred`、`field`、`integral_finsetSum`、`uniformOn` 取代 `PMF.uniformOfFintype`、`ite_eq_left` 取代 `if_pos` 等），并教读者自己读弃用警告。
+6. 主动标注 2024–2026 的更名与弃用（`push Not`、`Set.ofPred`、`field`、`integral_finsetSum`、`PMF.uniformOfFintype` 弃用为 `Measure.uniformOfFinset`（本书在有限空间上用 `uniformOn`）、`ite_eq_left` 取代 `if_pos` 等），并教读者自己读弃用警告。
 7. 所有引理名以本地 Mathlib 源码为准（文档站与 Loogle 领先于锁定版本）。

@@ -15,8 +15,8 @@
 | I 语言与证明的基础 | 1–8 | **已完成**（`Lean4Learn/Part1/`，114 道练习，答案齐全） |
 | II 证明工程 | 9–15 | **已完成**（`Lean4Learn/Part2/`，105 道练习，答案齐全） |
 | III 测度、概率与图 | 16–19 | **已完成**（`Lean4Learn/Part3/`，60 道练习，答案齐全） |
-| IV 研究方向 capstone | 20–23 | 待写（20–22 章的核心定理已有编译通过的原型） |
-| V 元编程、内部机制与编程 | 24–28 | 写作中 |
+| IV 研究方向 capstone | 20–23 | **20–22 已完成**（`Lean4Learn/Part4/`，45 道练习，答案齐全）；23 写作中 |
+| V 元编程、内部机制与编程 | 24–28 | **24–27 已完成**（`Lean4Learn/Part5/`，57 道练习，答案齐全）；28 写作中 |
 
 第 I 部分各章：
 
@@ -45,6 +45,19 @@
 17. [概率论基础](Lean4Learn/Part3/Ch17_Probability.lean)
 18. [图论](Lean4Learn/Part3/Ch18_GraphTheory.lean)
 19. [有限概率空间与概率方法](Lean4Learn/Part3/Ch19_FiniteProbability.lean)
+
+第 IV 部分各章：
+
+20. [随机图 G(n,p) 与一阶矩方法](Lean4Learn/Part4/Ch20_RandomGraphs.lean)
+21. [集中不等式：Chernoff 与 Hoeffding](Lean4Learn/Part4/Ch21_Concentration.lean)
+22. [大偏差入门：Cramér 型上界](Lean4Learn/Part4/Ch22_LargeDeviations.lean)
+
+第 V 部分各章：
+
+24. [Lean 作为函数式编程语言](Lean4Learn/Part5/Ch24_Programming.lean)
+25. [程序验证](Lean4Learn/Part5/Ch25_Verification.lean)
+26. [记号、宏与语法扩展](Lean4Learn/Part5/Ch26_Macros.lean)
+27. [元编程：Expr、MetaM 与策略编写](Lean4Learn/Part5/Ch27_Metaprogramming.lean)
 
 ## 环境准备（Windows）
 

@@ -19,3 +19,10 @@ public import Lean4Learn.Part3.Ch16_MeasureTheory
 public import Lean4Learn.Part3.Ch17_Probability
 public import Lean4Learn.Part3.Ch18_GraphTheory
 public import Lean4Learn.Part3.Ch19_FiniteProbability
+public import Lean4Learn.Part4.Ch20_RandomGraphs
+public import Lean4Learn.Part4.Ch21_Concentration
+public import Lean4Learn.Part4.Ch22_LargeDeviations
+public import Lean4Learn.Part5.Ch24_Programming
+public import Lean4Learn.Part5.Ch25_Verification
+public import Lean4Learn.Part5.Ch26_Macros
+public import Lean4Learn.Part5.Ch27_Metaprogramming
