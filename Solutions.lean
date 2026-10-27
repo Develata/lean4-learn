@@ -22,7 +22,9 @@ public import Solutions.Part3.Ch19_FiniteProbability
 public import Solutions.Part4.Ch20_RandomGraphs
 public import Solutions.Part4.Ch21_Concentration
 public import Solutions.Part4.Ch22_LargeDeviations
+public import Solutions.Part4.Ch23_Methodology
 public import Solutions.Part5.Ch24_Programming
 public import Solutions.Part5.Ch25_Verification
 public import Solutions.Part5.Ch26_Macros
 public import Solutions.Part5.Ch27_Metaprogramming
+public import Solutions.Part5.Ch28_Internals

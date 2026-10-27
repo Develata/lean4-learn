@@ -15,8 +15,8 @@
 | I 语言与证明的基础 | 1–8 | **已完成**（`Lean4Learn/Part1/`，114 道练习，答案齐全） |
 | II 证明工程 | 9–15 | **已完成**（`Lean4Learn/Part2/`，105 道练习，答案齐全） |
 | III 测度、概率与图 | 16–19 | **已完成**（`Lean4Learn/Part3/`，60 道练习，答案齐全） |
-| IV 研究方向 capstone | 20–23 | **20–22 已完成**（`Lean4Learn/Part4/`，45 道练习，答案齐全）；23 写作中 |
-| V 元编程、内部机制与编程 | 24–28 | **24–27 已完成**（`Lean4Learn/Part5/`，57 道练习，答案齐全）；28 写作中 |
+| IV 研究方向 capstone | 20–23 | **已完成**（`Lean4Learn/Part4/`，57 道练习，答案齐全） |
+| V 元编程、内部机制与编程 | 24–28 | **已完成**（`Lean4Learn/Part5/`，72 道练习，答案齐全） |
 
 第 I 部分各章：
 
@@ -51,6 +51,7 @@
 20. [随机图 G(n,p) 与一阶矩方法](Lean4Learn/Part4/Ch20_RandomGraphs.lean)
 21. [集中不等式：Chernoff 与 Hoeffding](Lean4Learn/Part4/Ch21_Concentration.lean)
 22. [大偏差入门：Cramér 型上界](Lean4Learn/Part4/Ch22_LargeDeviations.lean)
+23. [从练习到研究：形式化项目方法论与贡献 Mathlib](Lean4Learn/Part4/Ch23_Methodology.lean)
 
 第 V 部分各章：
 
@@ -58,6 +59,17 @@
 25. [程序验证](Lean4Learn/Part5/Ch25_Verification.lean)
 26. [记号、宏与语法扩展](Lean4Learn/Part5/Ch26_Macros.lean)
 27. [元编程：Expr、MetaM 与策略编写](Lean4Learn/Part5/Ch27_Metaprogramming.lean)
+28. [类型论与内核机制](Lean4Learn/Part5/Ch28_Internals.lean)
+
+附录：
+
+- A [策略速查表](docs/appendix/A-tactics.md)
+- B [术语表](docs/glossary.md)
+- C [记号 → 所需 `open` 对照表](docs/appendix/C-notation.md)
+- D [Lean 3→4 与 2024–2026 更名表](docs/appendix/D-renames.md)
+- E [Unicode 输入表](docs/appendix/E-unicode.md)
+- F [延伸阅读](docs/appendix/F-reading.md)
+- G [Windows 故障排查](docs/appendix/G-windows.md)
 
 ## 环境准备（Windows）
 
@@ -87,7 +99,9 @@ Lean4Learn/PartN/ChNN_*.lean   正文章节（可编译；练习含 sorry）
 Solutions/PartN/ChNN_*.lean    练习答案（无 sorry；lake build Solutions --wfail 通过）
 docs/outline.md                全书大纲与各章规格
 docs/style.md                  作者规范（文件头、断言须有示例、练习镜像等）
-docs/glossary.md               中英术语表与记号读法
+docs/glossary.md               中英术语表与记号读法（附录 B）
+docs/appendix/                 附录 A、C–G
+examples/modprobe/             第 28 章 §15 的模块可见性探针（bash examples/modprobe/run.sh）
 lakefile.toml, lean-toolchain  版本锁定
 ```
 

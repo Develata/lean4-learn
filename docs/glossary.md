@@ -80,6 +80,7 @@
 | type ascription | 类型标注 | — | † 指 `(e : T)`。 |
 | unification | 合一 | 统一（TP 5，多为泛指） | 高阶合一 = higher-order unification（TP 注释）。 |
 | metavariable | 元变量 | — | 精译中尚未赋值的占位，显示为 `?m`（MP 143, TP 6）。 |
+| postpone (elaboration) | 延后 | 推迟 | † 精译器暂时无法确定类型时先跳过一个子项，等其他信息（如默认实例）确定后再回来精译。 |
 | implicit argument | 隐式参数 | 隐参数（TP 14） | 隐式参数 RM 4, TP 21, MIL 16；`{x}` 绑定。 |
 | explicit argument | 显式参数 | — | † `(x : α)` 绑定。 |
 | instance-implicit argument | 实例隐式参数 | — | † `[inst : C α]` 绑定，由实例合成填入。 |
@@ -127,6 +128,10 @@
 | quotient (type) | 商类型 | 商（MIL 10） | 商类型 RM 10；`Quot`、`Quotient`。 |
 | setoid | 广集 | — | TP 注释；指带等价关系的类型。 |
 | subsingleton | 子单点类型 | — | † 至多一个居留者的类型；`Subsingleton` 不译。 |
+| subsingleton elimination / restricted elimination | 子单点消去 / 受限的消去 | — | † `Prop` 中的归纳类型能否消去到任意 `Sort`；判据见第 28 章 §3。 |
+| parameter / index (of an inductive type) | 参数 / 下标 | 索引 | † 参数在所有构造子中固定不变，下标随构造子变化（如 `Eq` 的第二个 `a`）。 |
+| index promotion | 下标提升 | — | † 精译器把每个构造子里都只是变量的下标自动改成参数（`inductive.autoPromoteIndices`）。 |
+| accessibility | 可及性 | — | † `Acc r a`：从 `a` 出发沿 `r` 没有无穷下降链；`WellFounded` 由它定义。 |
 | extensionality | 外延性 | — | MIL 名词表；`funext`、`Set.ext` 是其实例。 |
 | propositional extensionality | 命题外延性 | — | RM。 |
 | proof irrelevance | 证明无关性 | — | RM；同一命题的任意两个证明定义相等。 |
