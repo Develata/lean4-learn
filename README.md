@@ -14,7 +14,7 @@
 |---|---|---|
 | I 语言与证明的基础 | 1–8 | **已完成**（`Lean4Learn/Part1/`，114 道练习，答案齐全） |
 | II 证明工程 | 9–15 | **已完成**（`Lean4Learn/Part2/`，105 道练习，答案齐全） |
-| III 测度、概率与图 | 16–19 | 待写 |
+| III 测度、概率与图 | 16–19 | **已完成**（`Lean4Learn/Part3/`，60 道练习，答案齐全） |
 | IV 研究方向 capstone | 20–23 | 待写（20–22 章的核心定理已有编译通过的原型） |
 | V 元编程、内部机制与编程 | 24–28 | 写作中 |
 
@@ -38,6 +38,13 @@
 13. [证明的组织、调试与风格](Lean4Learn/Part2/Ch13_ProofEngineering.lean)
 14. [滤子与极限：Mathlib 的分析语言](Lean4Learn/Part2/Ch14_Filters.lean)
 15. [构造结构与层次结构（设计者视角）](Lean4Learn/Part2/Ch15_Hierarchies.lean)
+
+第 III 部分各章：
+
+16. [测度论基础](Lean4Learn/Part3/Ch16_MeasureTheory.lean)
+17. [概率论基础](Lean4Learn/Part3/Ch17_Probability.lean)
+18. [图论](Lean4Learn/Part3/Ch18_GraphTheory.lean)
+19. [有限概率空间与概率方法](Lean4Learn/Part3/Ch19_FiniteProbability.lean)
 
 ## 环境准备（Windows）
 

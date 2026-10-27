@@ -308,6 +308,7 @@
 | probability measure | 概率测度 | — | PKU, USTC；`IsProbabilityMeasure`。 |
 | probability space | 概率空间 | — | USTC；`MeasureSpace` 加概率测度。 |
 | almost everywhere | 几乎处处 | — | MIL；`ae`、`∀ᵐ`。 |
+| null set | 零测集 | — | † 测度为 0 的集合；「几乎处处成立」即例外点构成零测集（`MeasureTheory.ae_iff`：`(∀ᵐ a ∂μ, p a) ↔ μ {a \| ¬p a} = 0`）。 |
 | almost surely | 几乎必然 | — | NJU 12；概率测度下用此词并注明就是 `∀ᵐ ω ∂μ`，一般测度用「几乎处处」。 |
 | Lebesgue integral (`lintegral`) | 勒贝格积分 | — | WP；`∫⁻` 是取值于 `ℝ≥0∞` 的非负函数积分。 |
 | Bochner integral | Bochner 积分 | — | MIL；`∫ x, f x ∂μ`，对 Banach 空间取值的函数。 |
@@ -339,6 +340,7 @@
 | mutually independent | 相互独立 | — | †；`iIndepFun` 表示的整族独立。 |
 | identically distributed | 同分布 | — | WP；`IdentDistrib`。 |
 | i.i.d. | 独立同分布 | — | NJU 11, WP。 |
+| weak convergence (of measures) / convergence in distribution | 弱收敛 / 依分布收敛 | — | † 测度族对有界连续函数的积分收敛；随机变量层面称依分布收敛（`TendstoInDistribution`）。 |
 | conditional expectation | 条件期望 | 条件数学期望 | NJU 10, USTC。 |
 | kernel (probability) / Markov kernel | 概率核 / 马尔可夫核 | — | `Kernel` 称概率核，`IsMarkovKernel` 称马尔可夫核；绝不单写「核」。 |
 | filtration | 滤流 | σ-代数流（PKU） | USTC；首次出现写「filtration（滤流；与滤子 `Filter` 无关）」。 |
@@ -422,6 +424,8 @@
 | matching | 匹配 | — | OI。 |
 | perfect matching | 完美匹配 | — | OI。 |
 | isomorphism (of graphs) | 同构 | — | OI；`≃g`。 |
+| embedding (of graphs) | 嵌入 | — | † 保持并反映邻接的单射，`G ↪g G'`；与 `Function.Embedding`（单射打包）同词。 |
+| equipartition | 等分划 | — | † 各块大小相差至多 1 的划分（`Finpartition.IsEquipartition`），正则性引理用语。 |
 | handshaking lemma | 握手引理 | — | WP；`sum_degrees_eq_twice_card_edges`。 |
 | Hall's marriage theorem | 霍尔婚配定理 | — | WP。 |
 | Ramsey number | 拉姆齐数 | — | WP。 |
@@ -464,6 +468,8 @@
 | monoid | 幺半群 | — | †；`Monoid`。 |
 | group | 群 | — | †；`Group`。 |
 | ring | 环 | — | MIL 名词表；`Ring`。 |
+| module (algebraic) | 模 | — | † 环（或半环）上带数乘的加法交换幺半群，`Module R M`；与 Lean 的「模块」（`.lean` 文件，表 A.8）无关，首次出现须带消歧注。 |
+| nonnegative rational numbers | 非负有理数 | — | † `ℚ≥0`（`NNRat`）。 |
 | commutative ring / semiring | 交换环 / 交换半环 | — | †；`CommRing`、`CommSemiring`；`ring` 策略的适用范围（`ℕ` 是交换半环）。 |
 | field (algebra) | 域 | — | †；与结构体的「字段」区分。 |
 | ordered field | 有序域 | — | † 在 Mathlib 中由 `Field`、`LinearOrder`、`IsStrictOrderedRing` 三个类共同表达。 |

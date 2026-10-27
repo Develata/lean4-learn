@@ -15,3 +15,7 @@ public import Lean4Learn.Part2.Ch12_Finsets
 public import Lean4Learn.Part2.Ch13_ProofEngineering
 public import Lean4Learn.Part2.Ch14_Filters
 public import Lean4Learn.Part2.Ch15_Hierarchies
+public import Lean4Learn.Part3.Ch16_MeasureTheory
+public import Lean4Learn.Part3.Ch17_Probability
+public import Lean4Learn.Part3.Ch18_GraphTheory
+public import Lean4Learn.Part3.Ch19_FiniteProbability

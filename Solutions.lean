@@ -15,3 +15,7 @@ public import Solutions.Part2.Ch12_Finsets
 public import Solutions.Part2.Ch13_ProofEngineering
 public import Solutions.Part2.Ch14_Filters
 public import Solutions.Part2.Ch15_Hierarchies
+public import Solutions.Part3.Ch16_MeasureTheory
+public import Solutions.Part3.Ch17_Probability
+public import Solutions.Part3.Ch18_GraphTheory
+public import Solutions.Part3.Ch19_FiniteProbability
